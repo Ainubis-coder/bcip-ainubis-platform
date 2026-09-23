@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "types": ["vite/client", "node"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./*"],
+      "@bcip/ui": ["./packages/ui/src/index.ts"],
+      "@bcip/database": ["./packages/database/src/index.ts"],
+      "@bcip/auth": ["./packages/auth/src/index.ts"],
+      "@bcip/ai": ["./packages/ai/src/index.ts"],
+      "@bcip/integrations": ["./packages/integrations/src/index.ts"],
+      "@bcip/workflows": ["./packages/workflows/src/index.ts"]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
+}

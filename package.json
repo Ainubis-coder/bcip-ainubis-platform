@@ -1,0 +1,47 @@
+{
+  "name": "bcip-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "dev:api": "tsx apps/api/src/server.ts",
+    "dev:worker": "tsx apps/worker/src/index.ts",
+    "build": "vite build && npm run build:api && npm run build:worker",
+    "build:web": "vite build",
+    "build:api": "esbuild apps/api/src/server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/api/server.js",
+    "build:worker": "esbuild apps/worker/src/index.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/worker/index.js",
+    "start": "node server.ts",
+    "preview": "vite preview",
+    "test": "tsx tests/run-all.ts",
+    "clean": "rm -rf dist server.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "vite": "^8.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2"
+  }
+}

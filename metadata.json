@@ -1,0 +1,6 @@
+{
+  "name": "BCIP — Body Corporate Intelligence Platform",
+  "description": "Enterprise multi-tenant property management platform and Ainubis AI intelligence foundation for sectional-title ecosystems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

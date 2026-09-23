@@ -1,0 +1,60 @@
+flowchart TB
+    subgraph ClientLayer [Client & Web Layer]
+        UI[BCIP Web Console<br/>React 19 / Vite / Tailwind]
+        User[Managing Agents / Trustees / Owners]
+        User --> UI
+    end
+
+    subgraph APILayer [BCIP API Gateway /api/v1]
+        MW[Request ID / Structured Logging / Error Handler]
+        HealthEndpoint["/health"]
+        StatusEndpoint["/api/v1/status"]
+        APIRoutes["/api/v1/* Modular Routers"]
+        UI --> MW
+        MW --> HealthEndpoint
+        MW --> StatusEndpoint
+        MW --> APIRoutes
+    end
+
+    subgraph SharedPackages [Shared Domain Packages]
+        PKG_UI["@bcip/ui"]
+        PKG_DB["@bcip/database"]
+        PKG_AUTH["@bcip/auth"]
+        PKG_AI["@bcip/ai (Ainubis Gateway)"]
+        PKG_INT["@bcip/integrations"]
+        PKG_WF["@bcip/workflows"]
+    end
+
+    APIRoutes --> PKG_DB
+    APIRoutes --> PKG_AUTH
+    APIRoutes --> PKG_AI
+    APIRoutes --> PKG_INT
+    APIRoutes --> PKG_WF
+
+    subgraph DataQueueLayer [Storage & Message Foundation]
+        PG[(PostgreSQL 16 Multi-Tenant)]
+        RD[(Redis Queue / Cache)]
+        S3[(S3 Document Store)]
+    end
+
+    PKG_DB --> PG
+    PKG_INT --> RD
+    PKG_AI --> S3
+
+    subgraph WorkerLayer [Background Execution Engine]
+        Worker["BCIP Worker Runtime<br/>apps/worker"]
+        RD --> Worker
+        Worker --> PKG_AI
+        Worker --> PKG_DB
+    end
+
+    subgraph AinubisAI [Ainubis Intelligence Layer]
+        Gemini[Google Gemini 2.5 Flash / Pro]
+        Claude[Claude 3.7 / External LLMs]
+        Policies[Tenant Guardrails & PII Filter]
+        Audit[AI Audit Trail & Observability]
+        PKG_AI --> Policies
+        Policies --> Gemini
+        Policies --> Claude
+        Gemini --> Audit
+    end
