@@ -18,6 +18,7 @@ export interface UserAccount {
   fullName: string;
   email: string;
   role: string;
+  userRole?: string;
   avatarUrl?: string;
   initials: string;
   tenantId: string;

@@ -3,13 +3,16 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
-import { envConfig } from './apps/api/src/config';
-import { logger } from './apps/api/src/logger';
-import { requestCorrelationMiddleware } from './apps/api/src/middleware/request-id';
-import { structuredLoggingMiddleware } from './apps/api/src/middleware/logger';
-import { errorHandlerMiddleware } from './apps/api/src/middleware/error-handler';
-import { healthRouter } from './apps/api/src/routes/health.route';
-import { apiV1Router } from './apps/api/src/routes';
+import { envConfig } from './apps/api/src/config/index.ts';
+import { logger } from './apps/api/src/logger/index.ts';
+import { requestCorrelationMiddleware } from './apps/api/src/middleware/request-id.ts';
+import { structuredLoggingMiddleware } from './apps/api/src/middleware/logger.ts';
+import { errorHandlerMiddleware } from './apps/api/src/middleware/error-handler.ts';
+import { healthRouter } from './apps/api/src/routes/health.route.ts';
+import { apiV1Router } from './apps/api/src/routes/index.ts';
+import { leadService } from './packages/database/src/crm/services/lead.service.ts';
+import { opportunityService } from './packages/database/src/crm/services/opportunity.service.ts';
+import { seedCrmDevelopmentData } from './packages/database/src/seeds/crm.seed.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +56,23 @@ async function bootstrap() {
 
   // Global Error Handler Middleware
   app.use(errorHandlerMiddleware);
+
+  // Initialize initial development CRM seed data for demo tenant if empty
+  try {
+    const oppCount = opportunityService.count('ten-001');
+    const leadCount = leadService.count('ten-001');
+    if (oppCount === 0 || leadCount === 0) {
+      await seedCrmDevelopmentData('ten-001', 'usr-9901');
+      logger.info('[BCIP CRM Seed] Initialized demo CRM data for ten-001', {
+        event: 'crm_demo_seeded',
+        data: { tenantId: 'ten-001' },
+      });
+    }
+  } catch (seedErr) {
+    logger.warn('[BCIP CRM Seed] Seed initialization skipped or encountered error', {
+      data: { error: (seedErr as Error).message },
+    });
+  }
 
   const port = Number(process.env.PORT) || 3000;
   app.listen(port, '0.0.0.0', () => {

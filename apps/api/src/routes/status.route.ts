@@ -1,7 +1,7 @@
-import { Router, Request, Response } from 'express';
-import { envConfig } from '../config';
+import express, { type Request, type Response } from 'express';
+import { envConfig } from '../config/index.ts';
 
-export const statusRouter = Router();
+export const statusRouter = express.Router();
 
 statusRouter.get('/status', (req: Request, res: Response) => {
   res.status(200).json({

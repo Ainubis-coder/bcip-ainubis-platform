@@ -10,6 +10,7 @@ import { ModulePlaceholderView } from './components/ModulePlaceholderView';
 import { AinubisIntelligencePanel } from './components/AinubisIntelligencePanel';
 import { ApiStatusModal } from './components/ApiStatusModal';
 import { DesignSystemShowcase } from './components/DesignSystemShowcase';
+import { CrmPipelinePage, LeadsPage } from './components/crm';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { NotificationPanel } from './components/NotificationPanel';
 import { TenantContextModal } from './components/TenantContextModal';
@@ -174,6 +175,24 @@ export function AppShell() {
                 />
               )}
 
+              {currentModule === 'crm' && (
+                <CrmPipelinePage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
+              {currentModule === 'leads' && (
+                <LeadsPage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
               {currentModule === 'ainubis' && (
                 <AinubisIntelligencePanel
                   onReturnToDashboard={() => navigateTo('dashboard')}
@@ -185,6 +204,8 @@ export function AppShell() {
               )}
 
               {currentModule !== 'dashboard' &&
+                currentModule !== 'crm' &&
+                currentModule !== 'leads' &&
                 currentModule !== 'ainubis' &&
                 currentModule !== 'design_system' && (
                   <ModulePlaceholderView

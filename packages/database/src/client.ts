@@ -1,5 +1,5 @@
 import net from 'net';
-import { getDatabaseConfig, DatabaseConfig } from './config';
+import { getDatabaseConfig, type DatabaseConfig } from './config.ts';
 
 export interface QueryResult<T = unknown> {
   rows: T[];

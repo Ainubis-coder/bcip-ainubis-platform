@@ -1,0 +1,859 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BCIP CRM & Sales Engine REST API",
+    "description": "Enterprise multi-tenant REST API for the Body Corporate Intelligence Platform (BCIP) CRM domain. Manages Leads, Contacts, Organisations, Scheme Prospects, Opportunities, Activities, Tasks, Campaigns, Proposals, and Contracts.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "BCIP Platform Engineering",
+      "email": "engineering@bcip.platform"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Production & Staging API v1 Gateway"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/organisations": {
+      "get": {
+        "summary": "List organisations with pagination, search, and filtering",
+        "tags": ["Organisations"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "$ref": "#/components/parameters/SortByParam" },
+          { "$ref": "#/components/parameters/SortOrderParam" },
+          { "$ref": "#/components/parameters/SearchParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/OrganisationStatus" } },
+          { "name": "organisationType", "in": "query", "schema": { "$ref": "#/components/schemas/OrganisationType" } }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/PaginatedOrganisationsResponse" },
+          "401": { "$ref": "#/components/responses/UnauthorizedError" },
+          "403": { "$ref": "#/components/responses/ForbiddenError" }
+        }
+      },
+      "post": {
+        "summary": "Create a new organisation",
+        "tags": ["Organisations"],
+        "parameters": [{ "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateOrganisationDto" } } }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/SingleOrganisationResponse" },
+          "400": { "$ref": "#/components/responses/BadRequestError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/organisations/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Retrieve an organisation by ID",
+        "tags": ["Organisations"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/SingleOrganisationResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "patch": {
+        "summary": "Update organisation attributes",
+        "tags": ["Organisations"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateOrganisationDto" } } }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/SingleOrganisationResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "delete": {
+        "summary": "Soft-delete an organisation",
+        "tags": ["Organisations"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/DeleteResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/organisations/{id}/contacts": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "List all contacts affiliated with this organisation",
+        "tags": ["Organisations"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/ContactsListResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/organisations/{id}/opportunities": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "List all sales opportunities for this organisation",
+        "tags": ["Organisations"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/OpportunitiesListResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/organisations/{id}/scheme-prospects": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "List scheme prospects associated with this organisation",
+        "tags": ["Organisations"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/SchemeProspectsListResponse" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "List contacts with pagination and search",
+        "tags": ["Contacts"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "$ref": "#/components/parameters/SearchParam" },
+          { "name": "organisationId", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/ContactStatus" } }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/PaginatedContactsResponse" }
+        }
+      },
+      "post": {
+        "summary": "Create a new contact",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateContactDto" } } }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/SingleContactResponse" }
+        }
+      }
+    },
+    "/contacts/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Get contact by ID",
+        "tags": ["Contacts"],
+        "responses": { "200": { "$ref": "#/components/responses/SingleContactResponse" }, "404": { "$ref": "#/components/responses/NotFoundError" } }
+      },
+      "patch": {
+        "summary": "Update contact",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateContactDto" } } }
+        },
+        "responses": { "200": { "$ref": "#/components/responses/SingleContactResponse" } }
+      },
+      "delete": {
+        "summary": "Soft delete contact",
+        "tags": ["Contacts"],
+        "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } }
+      }
+    },
+    "/leads": {
+      "get": {
+        "summary": "List leads with pagination and qualification filters",
+        "tags": ["Leads"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "$ref": "#/components/parameters/SearchParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/LeadStatus" } },
+          { "name": "qualificationStatus", "in": "query", "schema": { "$ref": "#/components/schemas/QualificationStatus" } },
+          { "name": "campaignId", "in": "query", "schema": { "type": "string" } },
+          { "name": "leadOwnerId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/PaginatedLeadsResponse" }
+        }
+      },
+      "post": {
+        "summary": "Capture a new lead",
+        "tags": ["Leads"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateLeadDto" } } }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/SingleLeadResponse" }
+        }
+      }
+    },
+    "/leads/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Get lead details",
+        "tags": ["Leads"],
+        "responses": { "200": { "$ref": "#/components/responses/SingleLeadResponse" }, "404": { "$ref": "#/components/responses/NotFoundError" } }
+      },
+      "patch": {
+        "summary": "Update lead details",
+        "tags": ["Leads"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateLeadDto" } } }
+        },
+        "responses": { "200": { "$ref": "#/components/responses/SingleLeadResponse" } }
+      },
+      "delete": {
+        "summary": "Soft delete lead",
+        "tags": ["Leads"],
+        "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } }
+      }
+    },
+    "/leads/{id}/convert": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": {
+        "summary": "Atomically convert a lead into an Organisation, Contact, Scheme Prospect, and Opportunity",
+        "tags": ["Leads"],
+        "requestBody": {
+          "required": false,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ConvertLeadDto" } } }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/ConvertLeadResponse" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/scheme-prospects": {
+      "get": {
+        "summary": "List scheme prospects",
+        "tags": ["Scheme Prospects"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "$ref": "#/components/parameters/SearchParam" },
+          { "name": "organisationId", "in": "query", "schema": { "type": "string" } },
+          { "name": "leadId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedSchemeProspectsResponse" } }
+      },
+      "post": {
+        "summary": "Create scheme prospect",
+        "tags": ["Scheme Prospects"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateSchemeProspectDto" } } }
+        },
+        "responses": { "201": { "$ref": "#/components/responses/SingleSchemeProspectResponse" } }
+      }
+    },
+    "/scheme-prospects/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Get scheme prospect by ID",
+        "tags": ["Scheme Prospects"],
+        "responses": { "200": { "$ref": "#/components/responses/SingleSchemeProspectResponse" } }
+      },
+      "patch": {
+        "summary": "Update scheme prospect",
+        "tags": ["Scheme Prospects"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSchemeProspectDto" } } } },
+        "responses": { "200": { "$ref": "#/components/responses/SingleSchemeProspectResponse" } }
+      },
+      "delete": {
+        "summary": "Soft delete scheme prospect",
+        "tags": ["Scheme Prospects"],
+        "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } }
+      }
+    },
+    "/opportunities": {
+      "get": {
+        "summary": "List opportunities",
+        "tags": ["Opportunities"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "$ref": "#/components/parameters/SearchParam" },
+          { "name": "stage", "in": "query", "schema": { "$ref": "#/components/schemas/OpportunityStage" } },
+          { "name": "organisationId", "in": "query", "schema": { "type": "string" } },
+          { "name": "ownerUserId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedOpportunitiesResponse" } }
+      },
+      "post": {
+        "summary": "Create sales opportunity",
+        "tags": ["Opportunities"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateOpportunityDto" } } }
+        },
+        "responses": { "201": { "$ref": "#/components/responses/SingleOpportunityResponse" } }
+      }
+    },
+    "/opportunities/pipeline": {
+      "get": {
+        "summary": "Retrieve pipeline-oriented aggregation grouped by stages",
+        "tags": ["Opportunities"],
+        "parameters": [
+          { "name": "stage", "in": "query", "schema": { "$ref": "#/components/schemas/OpportunityStage" } },
+          { "name": "owner", "in": "query", "schema": { "type": "string" } },
+          { "name": "fromDate", "in": "query", "schema": { "type": "string", "format": "date-time" } },
+          { "name": "toDate", "in": "query", "schema": { "type": "string", "format": "date-time" } }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/PipelineSummaryResponse" }
+        }
+      }
+    },
+    "/opportunities/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Get opportunity details",
+        "tags": ["Opportunities"],
+        "responses": { "200": { "$ref": "#/components/responses/SingleOpportunityResponse" } }
+      },
+      "patch": {
+        "summary": "Update opportunity details",
+        "tags": ["Opportunities"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateOpportunityDto" } } } },
+        "responses": { "200": { "$ref": "#/components/responses/SingleOpportunityResponse" } }
+      },
+      "delete": {
+        "summary": "Soft delete opportunity",
+        "tags": ["Opportunities"],
+        "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } }
+      }
+    },
+    "/opportunities/{id}/stage": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": {
+        "summary": "Transition opportunity to a new pipeline stage and append to stage history",
+        "tags": ["Opportunities"],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StageTransitionDto" } } }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/StageTransitionResponse" }
+        }
+      }
+    },
+    "/opportunities/{id}/history": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": {
+        "summary": "Retrieve complete stage velocity and transition audit history",
+        "tags": ["Opportunities"],
+        "responses": {
+          "200": { "$ref": "#/components/responses/OpportunityStageHistoryListResponse" }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "summary": "List CRM activities",
+        "tags": ["Activities"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "name": "activityType", "in": "query", "schema": { "$ref": "#/components/schemas/ActivityType" } },
+          { "name": "leadId", "in": "query", "schema": { "type": "string" } },
+          { "name": "opportunityId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedActivitiesResponse" } }
+      },
+      "post": {
+        "summary": "Log a new activity",
+        "tags": ["Activities"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateActivityDto" } } } },
+        "responses": { "201": { "$ref": "#/components/responses/SingleActivityResponse" } }
+      }
+    },
+    "/activities/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": { "summary": "Get activity by ID", "tags": ["Activities"], "responses": { "200": { "$ref": "#/components/responses/SingleActivityResponse" } } },
+      "patch": { "summary": "Update activity", "tags": ["Activities"], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateActivityDto" } } } }, "responses": { "200": { "$ref": "#/components/responses/SingleActivityResponse" } } },
+      "delete": { "summary": "Soft delete activity", "tags": ["Activities"], "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } } }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "List tasks",
+        "tags": ["Tasks"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/TaskStatus" } },
+          { "name": "priority", "in": "query", "schema": { "$ref": "#/components/schemas/TaskPriority" } },
+          { "name": "assignedTo", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedTasksResponse" } }
+      },
+      "post": {
+        "summary": "Create CRM task",
+        "tags": ["Tasks"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateTaskDto" } } } },
+        "responses": { "201": { "$ref": "#/components/responses/SingleTaskResponse" } }
+      }
+    },
+    "/tasks/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": { "summary": "Get task by ID", "tags": ["Tasks"], "responses": { "200": { "$ref": "#/components/responses/SingleTaskResponse" } } },
+      "patch": { "summary": "Update task", "tags": ["Tasks"], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateTaskDto" } } } }, "responses": { "200": { "$ref": "#/components/responses/SingleTaskResponse" } } },
+      "delete": { "summary": "Soft delete task", "tags": ["Tasks"], "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } } }
+    },
+    "/tasks/{id}/complete": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": {
+        "summary": "Mark task as COMPLETED",
+        "tags": ["Tasks"],
+        "responses": { "200": { "$ref": "#/components/responses/SingleTaskResponse" } }
+      }
+    },
+    "/campaigns": {
+      "get": {
+        "summary": "List campaigns",
+        "tags": ["Campaigns"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/CampaignStatus" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedCampaignsResponse" } }
+      },
+      "post": {
+        "summary": "Create marketing/sales campaign",
+        "tags": ["Campaigns"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateCampaignDto" } } } },
+        "responses": { "201": { "$ref": "#/components/responses/SingleCampaignResponse" } }
+      }
+    },
+    "/campaigns/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": { "summary": "Get campaign by ID", "tags": ["Campaigns"], "responses": { "200": { "$ref": "#/components/responses/SingleCampaignResponse" } } },
+      "patch": { "summary": "Update campaign", "tags": ["Campaigns"], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateCampaignDto" } } } }, "responses": { "200": { "$ref": "#/components/responses/SingleCampaignResponse" } } },
+      "delete": { "summary": "Soft delete campaign", "tags": ["Campaigns"], "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } } }
+    },
+    "/proposals": {
+      "get": {
+        "summary": "List commercial proposals",
+        "tags": ["Proposals"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/ProposalStatus" } },
+          { "name": "opportunityId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedProposalsResponse" } }
+      },
+      "post": {
+        "summary": "Generate a new proposal with decimal currency calculation",
+        "tags": ["Proposals"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateProposalDto" } } } },
+        "responses": { "201": { "$ref": "#/components/responses/SingleProposalResponse" } }
+      }
+    },
+    "/proposals/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": { "summary": "Get proposal details", "tags": ["Proposals"], "responses": { "200": { "$ref": "#/components/responses/SingleProposalResponse" } } },
+      "patch": { "summary": "Update proposal", "tags": ["Proposals"], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateProposalDto" } } } }, "responses": { "200": { "$ref": "#/components/responses/SingleProposalResponse" } } },
+      "delete": { "summary": "Soft delete proposal", "tags": ["Proposals"], "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } } }
+    },
+    "/proposals/{id}/send": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": { "summary": "Issue and send proposal to client", "tags": ["Proposals"], "responses": { "200": { "$ref": "#/components/responses/SingleProposalResponse" } } }
+    },
+    "/proposals/{id}/accept": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": { "summary": "Record client commercial acceptance", "tags": ["Proposals"], "responses": { "200": { "$ref": "#/components/responses/SingleProposalResponse" } } }
+    },
+    "/proposals/{id}/reject": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "post": { "summary": "Record client decline/rejection", "tags": ["Proposals"], "responses": { "200": { "$ref": "#/components/responses/SingleProposalResponse" } } }
+    },
+    "/contracts": {
+      "get": {
+        "summary": "List customer contracts",
+        "tags": ["Contracts"],
+        "parameters": [
+          { "$ref": "#/components/parameters/PageParam" },
+          { "$ref": "#/components/parameters/PageSizeParam" },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/ContractStatus" } },
+          { "name": "opportunityId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/PaginatedContractsResponse" } }
+      },
+      "post": {
+        "summary": "Create Master Services Agreement / Contract",
+        "tags": ["Contracts"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateContractDto" } } } },
+        "responses": { "201": { "$ref": "#/components/responses/SingleContractResponse" } }
+      }
+    },
+    "/contracts/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "get": { "summary": "Get contract by ID", "tags": ["Contracts"], "responses": { "200": { "$ref": "#/components/responses/SingleContractResponse" } } },
+      "patch": { "summary": "Update contract details", "tags": ["Contracts"], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateContractDto" } } } }, "responses": { "200": { "$ref": "#/components/responses/SingleContractResponse" } } },
+      "delete": { "summary": "Soft delete contract", "tags": ["Contracts"], "responses": { "200": { "$ref": "#/components/responses/DeleteResponse" } } }
+    },
+    "/contracts/{id}/sign": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": { "summary": "Execute and record signatures", "tags": ["Contracts"], "responses": { "200": { "$ref": "#/components/responses/SingleContractResponse" } } }
+    },
+    "/contracts/{id}/activate": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }, { "$ref": "#/components/parameters/IdempotencyKeyHeader" }],
+      "post": { "summary": "Activate contract and advance Opportunity to WON", "tags": ["Contracts"], "responses": { "200": { "$ref": "#/components/responses/SingleContractResponse" } } }
+    },
+    "/contracts/{id}/terminate": {
+      "parameters": [{ "$ref": "#/components/parameters/IdParam" }],
+      "post": { "summary": "Terminate active contract", "tags": ["Contracts"], "responses": { "200": { "$ref": "#/components/responses/SingleContractResponse" } } }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Standard RFC 6750 Bearer JWT token issued by BCIP TokenService."
+      }
+    },
+    "parameters": {
+      "IdParam": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Unique identifier of the entity"
+      },
+      "PageParam": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer", "default": 1, "minimum": 1 },
+        "description": "Page index (1-based)"
+      },
+      "PageSizeParam": {
+        "name": "pageSize",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer", "default": 20, "minimum": 1, "maximum": 100 },
+        "description": "Number of records per page (max 100)"
+      },
+      "SortByParam": {
+        "name": "sortBy",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "default": "createdAt" },
+        "description": "Field to sort results by"
+      },
+      "SortOrderParam": {
+        "name": "sortOrder",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" },
+        "description": "Sort direction: asc or desc"
+      },
+      "SearchParam": {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" },
+        "description": "Free text query to search across relevant string fields"
+      },
+      "IdempotencyKeyHeader": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": false,
+        "schema": { "type": "string" },
+        "description": "Unique idempotency token preventing duplicate execution on retry"
+      }
+    },
+    "schemas": {
+      "LeadStatus": {
+        "type": "string",
+        "enum": ["NEW", "ENRICHED", "QUALIFIED", "NURTURE", "RE_ENGAGEMENT", "LOST", "CONVERTED"]
+      },
+      "QualificationStatus": {
+        "type": "string",
+        "enum": ["UNQUALIFIED", "QUALIFYING", "QUALIFIED", "DISQUALIFIED"]
+      },
+      "OrganisationType": {
+        "type": "string",
+        "enum": ["MANAGING_AGENT", "BODY_CORPORATE", "TRUSTEE_ORGANISATION", "DEVELOPER", "SERVICE_PROVIDER", "OTHER"]
+      },
+      "OrganisationStatus": {
+        "type": "string",
+        "enum": ["PROSPECT", "ACTIVE", "INACTIVE", "ARCHIVED"]
+      },
+      "ContactStatus": {
+        "type": "string",
+        "enum": ["ACTIVE", "INACTIVE", "UNVERIFIED", "ARCHIVED"]
+      },
+      "OpportunityStage": {
+        "type": "string",
+        "enum": ["DISCOVERY", "SOLUTION_DESIGN", "PROPOSAL", "CONTRACT", "WON", "LOST"]
+      },
+      "ActivityType": {
+        "type": "string",
+        "enum": ["CALL", "EMAIL", "MEETING", "NOTE", "DEMO", "DISCOVERY", "PROPOSAL", "CONTRACT", "OTHER"]
+      },
+      "TaskStatus": {
+        "type": "string",
+        "enum": ["OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+      },
+      "TaskPriority": {
+        "type": "string",
+        "enum": ["LOW", "MEDIUM", "HIGH", "URGENT"]
+      },
+      "CampaignType": {
+        "type": "string",
+        "enum": ["MARKETING", "REFERRAL", "EVENTS", "DIGITAL", "PARTNER", "SALES"]
+      },
+      "CampaignStatus": {
+        "type": "string",
+        "enum": ["PLANNING", "ACTIVE", "PAUSED", "COMPLETED", "CANCELLED"]
+      },
+      "ProposalStatus": {
+        "type": "string",
+        "enum": ["DRAFT", "INTERNAL_REVIEW", "APPROVED", "SENT", "VIEWED", "ACCEPTED", "DECLINED", "EXPIRED", "CANCELLED"]
+      },
+      "ContractStatus": {
+        "type": "string",
+        "enum": ["DRAFT", "INTERNAL_REVIEW", "APPROVED", "SENT", "PARTIALLY_SIGNED", "SIGNED", "ACTIVE", "EXPIRED", "TERMINATED", "CANCELLED"]
+      },
+      "CreateOrganisationDto": {
+        "type": "object",
+        "required": ["name", "organisationType"],
+        "properties": {
+          "name": { "type": "string" },
+          "legalName": { "type": "string" },
+          "organisationType": { "$ref": "#/components/schemas/OrganisationType" },
+          "registrationNumber": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" },
+          "website": { "type": "string" }
+        }
+      },
+      "UpdateOrganisationDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "legalName": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/OrganisationStatus" }
+        }
+      },
+      "CreateContactDto": {
+        "type": "object",
+        "required": ["firstName", "lastName"],
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "organisationId": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" }
+        }
+      },
+      "UpdateContactDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "CreateLeadDto": {
+        "type": "object",
+        "required": ["title", "source"],
+        "properties": {
+          "title": { "type": "string" },
+          "source": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "estimatedUnits": { "type": "integer" }
+        }
+      },
+      "UpdateLeadDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/LeadStatus" }
+        }
+      },
+      "ConvertLeadDto": {
+        "type": "object",
+        "properties": {
+          "organisationName": { "type": "string" },
+          "contactFirstName": { "type": "string" },
+          "contactLastName": { "type": "string" },
+          "opportunityName": { "type": "string" },
+          "estimatedValue": { "type": "number" },
+          "createSchemeProspect": { "type": "boolean" }
+        }
+      },
+      "CreateSchemeProspectDto": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "organisationId": { "type": "string" },
+          "estimatedUnitCount": { "type": "integer" }
+        }
+      },
+      "UpdateSchemeProspectDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "estimatedUnitCount": { "type": "integer" }
+        }
+      },
+      "CreateOpportunityDto": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "organisationId": { "type": "string" },
+          "estimatedValue": { "type": "number" },
+          "probability": { "type": "number" }
+        }
+      },
+      "UpdateOpportunityDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "estimatedValue": { "type": "number" }
+        }
+      },
+      "StageTransitionDto": {
+        "type": "object",
+        "required": ["stage"],
+        "properties": {
+          "stage": { "$ref": "#/components/schemas/OpportunityStage" },
+          "reason": { "type": "string" }
+        }
+      },
+      "CreateActivityDto": {
+        "type": "object",
+        "required": ["subject", "activityType"],
+        "properties": {
+          "subject": { "type": "string" },
+          "activityType": { "$ref": "#/components/schemas/ActivityType" }
+        }
+      },
+      "UpdateActivityDto": {
+        "type": "object",
+        "properties": {
+          "subject": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "CreateTaskDto": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "priority": { "$ref": "#/components/schemas/TaskPriority" }
+        }
+      },
+      "UpdateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/TaskStatus" }
+        }
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "required": ["name", "campaignType"],
+        "properties": {
+          "name": { "type": "string" },
+          "campaignType": { "$ref": "#/components/schemas/CampaignType" }
+        }
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/CampaignStatus" }
+        }
+      },
+      "CreateProposalDto": {
+        "type": "object",
+        "required": ["title", "opportunityId", "subtotal", "total"],
+        "properties": {
+          "title": { "type": "string" },
+          "opportunityId": { "type": "string" },
+          "subtotal": { "type": "number" },
+          "tax": { "type": "number" },
+          "total": { "type": "number" }
+        }
+      },
+      "UpdateProposalDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "total": { "type": "number" }
+        }
+      },
+      "CreateContractDto": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "opportunityId": { "type": "string" },
+          "effectiveDate": { "type": "string" }
+        }
+      },
+      "UpdateContractDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/ContractStatus" }
+        }
+      }
+    },
+    "responses": {
+      "SingleOrganisationResponse": { "description": "Single organisation envelope", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedOrganisationsResponse": { "description": "Paginated organisations", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleContactResponse": { "description": "Single contact envelope", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedContactsResponse": { "description": "Paginated contacts", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "ContactsListResponse": { "description": "Child contacts list", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleLeadResponse": { "description": "Single lead envelope", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedLeadsResponse": { "description": "Paginated leads", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "ConvertLeadResponse": { "description": "Lead conversion result", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleSchemeProspectResponse": { "description": "Single scheme prospect", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedSchemeProspectsResponse": { "description": "Paginated scheme prospects", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SchemeProspectsListResponse": { "description": "Scheme prospects list", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleOpportunityResponse": { "description": "Single opportunity", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedOpportunitiesResponse": { "description": "Paginated opportunities", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "OpportunitiesListResponse": { "description": "Opportunities list", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "StageTransitionResponse": { "description": "Stage transition result with history record", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "OpportunityStageHistoryListResponse": { "description": "Opportunity stage history items", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PipelineSummaryResponse": { "description": "Pipeline summary aggregation", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleActivityResponse": { "description": "Single activity", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedActivitiesResponse": { "description": "Paginated activities", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleTaskResponse": { "description": "Single task", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedTasksResponse": { "description": "Paginated tasks", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleCampaignResponse": { "description": "Single campaign", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedCampaignsResponse": { "description": "Paginated campaigns", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleProposalResponse": { "description": "Single proposal", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedProposalsResponse": { "description": "Paginated proposals", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "SingleContractResponse": { "description": "Single contract", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "PaginatedContractsResponse": { "description": "Paginated contracts", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "DeleteResponse": { "description": "Soft delete confirmation", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "BadRequestError": { "description": "Malformed request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } },
+      "ValidationError": { "description": "Validation failed with details", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } },
+      "UnauthorizedError": { "description": "Missing or invalid authentication token", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } },
+      "ForbiddenError": { "description": "Insufficient RBAC permissions or invalid tenant", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } },
+      "NotFoundError": { "description": "Resource not found or cross-tenant access blocked", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } },
+      "ConflictError": { "description": "Conflict or concurrent request in-flight", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorEnvelope" } } } }
+    }
+  }
+}

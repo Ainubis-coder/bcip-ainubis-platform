@@ -1,4 +1,4 @@
-import { envConfig } from '../config';
+import { envConfig } from '../config/index.ts';
 
 export interface LogEntry {
   timestamp: string;

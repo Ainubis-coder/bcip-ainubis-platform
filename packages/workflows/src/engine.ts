@@ -1,4 +1,4 @@
-import { WorkflowDefinition, WorkflowExecutionRecord } from './types';
+import type { WorkflowDefinition, WorkflowExecutionRecord } from './types.ts';
 
 export class WorkflowEngine {
   private workflows: Map<string, WorkflowDefinition> = new Map();

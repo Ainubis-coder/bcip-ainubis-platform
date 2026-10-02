@@ -1,5 +1,5 @@
-import { UserRole } from './types';
-import { ROLE_PERMISSION_MAP } from './permissions';
+import type { UserRole } from './types.ts';
+import { ROLE_PERMISSION_MAP } from './permissions.ts';
 
 export function hasPermission(userRole: UserRole, permission: string): boolean {
   const permissions = ROLE_PERMISSION_MAP[userRole] || [];

@@ -1,7 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../logger';
+import type { Request, Response, NextFunction } from 'express';
+import { logger } from '../logger/index.ts';
 
 export function structuredLoggingMiddleware(req: Request, res: Response, next: NextFunction) {
+  // Only log API routes and health checks; skip Vite internal frontend development asset requests
+  if (!req.originalUrl.startsWith('/api') && !req.originalUrl.startsWith('/health')) {
+    return next();
+  }
+
   const startTime = Date.now();
   const requestId = req.requestId;
 

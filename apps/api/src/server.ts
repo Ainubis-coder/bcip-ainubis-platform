@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { envConfig } from './config';
-import { logger } from './logger';
-import { requestCorrelationMiddleware } from './middleware/request-id';
-import { structuredLoggingMiddleware } from './middleware/logger';
-import { errorHandlerMiddleware, AppError } from './middleware/error-handler';
-import { healthRouter } from './routes/health.route';
-import { apiV1Router } from './routes';
+import { envConfig } from './config/index.ts';
+import { logger } from './logger/index.ts';
+import { requestCorrelationMiddleware } from './middleware/request-id.ts';
+import { structuredLoggingMiddleware } from './middleware/logger.ts';
+import { errorHandlerMiddleware, AppError } from './middleware/error-handler.ts';
+import { healthRouter } from './routes/health.route.ts';
+import { apiV1Router } from './routes/index.ts';
 
 export function createApiApp() {
   const app = express();

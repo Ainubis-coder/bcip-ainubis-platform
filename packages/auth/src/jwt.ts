@@ -1,4 +1,4 @@
-import { AuthTokenPayload, AuthUser } from './types';
+import type { AuthTokenPayload, AuthUser } from './types.ts';
 
 export class TokenService {
   private secret: string;

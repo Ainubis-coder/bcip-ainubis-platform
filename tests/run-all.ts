@@ -5,6 +5,11 @@ import { runInfrastructureTests } from './infrastructure.test';
 import { runWebTests } from './web.test';
 import { runDesignSystemTests } from './design-system.test';
 import { runShellTests } from './shell.test';
+import { runCrmTests } from './crm.test.ts';
+import { runCrmApiTests } from './crm-api.test.ts';
+import { runCrmFrontendTests } from './crm-frontend.test.ts';
+import { runCrmLeadsTests } from './crm-leads.test.ts';
+import { runCrmConversionTests } from './crm-conversion.test.ts';
 
 async function main() {
   console.log('====================================================');
@@ -19,6 +24,11 @@ async function main() {
     await runWebTests();
     await runDesignSystemTests();
     await runShellTests();
+    await runCrmTests();
+    await runCrmApiTests();
+    await runCrmFrontendTests();
+    await runCrmLeadsTests();
+    await runCrmConversionTests();
 
     console.log('\n====================================================');
     console.log('✅ ALL TEST SUITES PASSED SUCCESSFULLY');

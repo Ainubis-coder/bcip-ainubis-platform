@@ -68,6 +68,7 @@ export const CURRENT_USER: UserAccount = {
   fullName: 'Thabo Mokoena',
   email: 't.mokoena@apexportfolios.co.za',
   role: 'Lead Portfolio Manager',
+  userRole: 'MANAGING_AGENT_ADMIN',
   initials: 'TM',
   tenantId: 'ten-001',
   tenantName: 'Apex Property Portfolios (Pty) Ltd',

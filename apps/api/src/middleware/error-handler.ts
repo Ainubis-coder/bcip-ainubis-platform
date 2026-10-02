@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../logger';
+import type { Request, Response, NextFunction } from 'express';
+import { logger } from '../logger/index.ts';
 
 export interface AppError extends Error {
   statusCode?: number;

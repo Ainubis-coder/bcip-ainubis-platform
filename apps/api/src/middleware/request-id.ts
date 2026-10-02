@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { envConfig } from '../config';
+import type { Request, Response, NextFunction } from 'express';
+import { envConfig } from '../config/index.ts';
 
 declare global {
   namespace Express {

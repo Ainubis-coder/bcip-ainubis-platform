@@ -51,6 +51,7 @@ bcip-ainubis-platform/
 │   ├── architecture/      # High-level system architecture and data flows
 │   ├── design-system/     # Design tokens, components, accessibility & theming
 │   ├── application-shell/ # Enterprise shell architecture, navigation & responsive docs
+│   ├── crm/               # CRM domain model, database schema, ERD, and lifecycle docs
 │   ├── ADR/               # Architecture Decision Records (ADR-001)
 │   ├── specification/     # Detailed domain specifications and role definitions
 │   └── api/               # Version 1 API documentation and contract specifications
@@ -157,8 +158,9 @@ npm run build
 
 - [x] **Phase 1 (Prompt 001)**: Project Bootstrap & Architecture Foundation — COMPLETE
 - [x] **Phase 2A (Prompt 002A)**: Enterprise Design System & Centralized Design Tokens — COMPLETE
-- [x] **Phase 2B (Prompt 002B)**: Enterprise Application Shell Architecture — COMPLETE
-- [ ] **Phase 2C (Prompt 002C)**: Navigation & Workspace Architecture
+- [x] **Phase 2B (Prompt 002B)**: CRM Domain Model & Database Schema — COMPLETE
+- [ ] **Phase 2C (Prompt 002C)**: BCIP CRM API Layer — UPCOMING
+- [ ] **Phase 2D (Prompt 002D)**: CRM User Interface & Sales Workspaces
 - [ ] **Prompt 003**: Database Foundation & Multi-Tenant Schemas
 - [ ] **Prompt 004**: Authentication & Multi-Tenant Authorization (RBAC)
 
