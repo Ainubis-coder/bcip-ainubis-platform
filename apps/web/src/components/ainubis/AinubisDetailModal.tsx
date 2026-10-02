@@ -24,9 +24,11 @@ interface AinubisDetailModalProps {
   onApprove?: (obs: AIObservationRecord) => void;
   onReject?: (obs: AIObservationRecord) => void;
   onDismiss?: (obs: AIObservationRecord) => void;
+  onProposeAction?: (obs: AIObservationRecord) => void;
   allowReview?: boolean;
   allowApprove?: boolean;
   allowDismiss?: boolean;
+  allowPropose?: boolean;
   onNavigateToTargetEntity?: (entityType: string, entityId: string) => void;
 }
 
@@ -38,9 +40,11 @@ export function AinubisDetailModal({
   onApprove,
   onReject,
   onDismiss,
+  onProposeAction,
   allowReview = false,
   allowApprove = false,
   allowDismiss = false,
+  allowPropose = false,
   onNavigateToTargetEntity,
 }: AinubisDetailModalProps) {
   const [isRejecting, setIsRejecting] = useState(false);
@@ -122,6 +126,21 @@ export function AinubisDetailModal({
                 }}
               >
                 Dismiss
+              </Button>
+            )}
+
+            {allowPropose && observation.status === IntelligenceStatus.APPROVED && onProposeAction && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  onProposeAction(observation);
+                  onClose();
+                }}
+                className="bg-sky-600 hover:bg-sky-700 text-white flex items-center gap-1.5"
+              >
+                <Icon name="zap" size="xs" />
+                <span>Propose CRM Action</span>
               </Button>
             )}
           </div>

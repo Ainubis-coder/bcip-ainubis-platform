@@ -24,6 +24,7 @@ import {
   canReviewAI,
   canApproveAI,
   canDismissAI,
+  canViewAIActions,
 } from '../crm/shared/crm-permissions';
 import { IntelligenceObservationCard } from './IntelligenceObservationCard';
 import { AinubisHealthSummary } from './AinubisHealthSummary';
@@ -33,6 +34,7 @@ import { AinubisSkeleton } from './AinubisSkeleton';
 import { AinubisEmptyState } from './AinubisEmptyState';
 import { AinubisErrorState } from './AinubisErrorState';
 import { AinubisDetailModal } from './AinubisDetailModal';
+import { AinubisActionsTab } from './AinubisActionsTab';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface AinubisIntelligencePageProps {
@@ -50,10 +52,14 @@ export function AinubisIntelligencePage({
 }: AinubisIntelligencePageProps) {
   const userRole = user.role || user.userRole;
   const hasViewPermission = canViewAI(userRole);
+  const hasViewActionsPermission = canViewAIActions(userRole);
   const allowGenerate = canGenerateAI(userRole);
   const allowReview = canReviewAI(userRole);
   const allowApprove = canApproveAI(userRole);
   const allowDismiss = canDismissAI(userRole);
+
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'actions'>('dashboard');
+  const [actionProposedSuccess, setActionProposedSuccess] = useState<string | null>(null);
 
   // Summary Metrics State
   const [summary, setSummary] = useState<AinubisDashboardSummary | null>(null);
@@ -229,6 +235,18 @@ export function AinubisIntelligencePage({
     }
   };
 
+  // Handle Propose Action from Observation
+  const handleProposeAction = async (obs: AIObservationRecord) => {
+    try {
+      const action = await api.proposeAiAction({ observationId: obs.id });
+      setActionProposedSuccess(`Successfully proposed controlled CRM action: "${action.title}" (${action.actionType}) for verification.`);
+      setActiveTab('actions');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err: any) {
+      alert(err.message || 'Failed to propose AI CRM Action from observation');
+    }
+  };
+
   // Trigger CRM Hygiene or Health Audit
   const handleRunAnalysis = async () => {
     setIsAnalyzing(true);
@@ -300,8 +318,52 @@ export function AinubisIntelligencePage({
         </div>
       </div>
 
+      {/* Success Alert Banner */}
+      {actionProposedSuccess && (
+        <div className="p-3 bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 text-xs rounded-lg flex justify-between items-center">
+          <div className="flex gap-2 items-center">
+            <Icon name="check-circle" size="sm" className="text-emerald-400 shrink-0" />
+            <span>{actionProposedSuccess}</span>
+          </div>
+          <button
+            onClick={() => setActionProposedSuccess(null)}
+            className="text-emerald-400 hover:text-emerald-200 font-bold ml-2 text-sm"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Navigation Tabs */}
+      {hasViewActionsPermission && (
+        <div className="flex border-b border-slate-800 gap-4">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
+              activeTab === 'dashboard'
+                ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            Health Dashboard & Feed
+          </button>
+          <button
+            onClick={() => setActiveTab('actions')}
+            className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
+              activeTab === 'actions'
+                ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            Actions & CRM Automation
+          </button>
+        </div>
+      )}
+
       {/* Main Content States */}
-      {error ? (
+      {activeTab === 'actions' && hasViewActionsPermission ? (
+        <AinubisActionsTab activeTenant={activeTenant} user={user} />
+      ) : error ? (
         <AinubisErrorState
           error={error.message}
           statusCode={error.status}
@@ -457,9 +519,11 @@ export function AinubisIntelligencePage({
                   onApprove={handleApprove}
                   onReject={handleReject}
                   onDismiss={handleDismiss}
+                  onProposeAction={handleProposeAction}
                   allowReview={allowReview}
                   allowApprove={allowApprove}
                   allowDismiss={allowDismiss}
+                  allowPropose={true}
                 />
               ))}
 
@@ -489,9 +553,11 @@ export function AinubisIntelligencePage({
           onApprove={handleApprove}
           onReject={handleReject}
           onDismiss={handleDismiss}
+          onProposeAction={handleProposeAction}
           allowReview={allowReview}
           allowApprove={allowApprove}
           allowDismiss={allowDismiss}
+          allowPropose={true}
           onNavigateToTargetEntity={(entityType) => {
             if (onNavigate) {
               if (entityType === 'opportunity') onNavigate('crm');

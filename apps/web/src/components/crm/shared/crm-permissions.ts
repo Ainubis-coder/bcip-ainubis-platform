@@ -291,5 +291,40 @@ export function canMonitorAI(roleString?: string | null): boolean {
   return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_MONITOR);
 }
 
+/**
+ * Checks if user is permitted to view Ainubis AI actions
+ */
+export function canViewAIActions(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_VIEW);
+}
+
+/**
+ * Checks if user is permitted to approve Ainubis AI actions
+ */
+export function canApproveAIActions(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_APPROVE);
+}
+
+/**
+ * Checks if user is permitted to reject Ainubis AI actions
+ */
+export function canRejectAIActions(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_REJECT);
+}
+
+/**
+ * Checks if user is permitted to execute approved Ainubis AI actions
+ */
+export function canExecuteAIActions(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_EXECUTE);
+}
+
+/**
+ * Checks if user is permitted to manage or configure Ainubis AI actions
+ */
+export function canAdminAIActions(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_ADMIN);
+}
+
 
 

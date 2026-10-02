@@ -16,6 +16,7 @@ import { campaignsRouter } from './campaigns.route.ts';
 import { proposalsRouter } from './proposals.route.ts';
 import { contractsRouter } from './contracts.route.ts';
 import { aiObservationsRouter } from './ai-observations.route.ts';
+import { aiActionsRouter } from './ai-actions.route.ts';
 
 export const crmRouter = express.Router();
 
@@ -31,3 +32,4 @@ crmRouter.use('/proposals', proposalsRouter);
 crmRouter.use('/contracts', contractsRouter);
 crmRouter.use('/ai', aiObservationsRouter);
 crmRouter.use('/ai/observations', aiObservationsRouter);
+crmRouter.use('/ai/actions', aiActionsRouter);

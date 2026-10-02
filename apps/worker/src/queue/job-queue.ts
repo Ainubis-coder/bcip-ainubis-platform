@@ -4,6 +4,8 @@ export type JobType =
   | 'ai.ainubis_analysis'
   | 'ai.ainubis_monitor'
   | 'ai.ainubis_scheduled_all'
+  | 'ai.ainubis_action_execute'
+  | 'ai.ainubis_action_verify'
   | 'notification.dispatch'
   | 'integration.accounting_sync'
   | 'schedule.levy_roll_run'

@@ -897,6 +897,140 @@ export class CrmApiClient {
       headers: { 'X-Idempotency-Key': idempotencyKey },
     });
   }
+
+  // ==========================================================================
+  // AI ACTIONS API METHODS (Phase 2E-004)
+  // ==========================================================================
+
+  /**
+   * Fetches a paginated list of AI actions
+   */
+  public async listAiActions(params?: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    actionType?: string;
+    targetEntityType?: string;
+    targetEntityId?: string;
+  }): Promise<{ actions: any[]; pagination: any }> {
+    const query = new URLSearchParams();
+    if (params?.page) query.set('page', String(params.page));
+    if (params?.pageSize) query.set('limit', String(params.pageSize));
+    if (params?.status) query.set('status', params.status);
+    if (params?.actionType) query.set('actionType', params.actionType);
+    if (params?.targetEntityType) query.set('targetEntityType', params.targetEntityType);
+    if (params?.targetEntityId) query.set('targetEntityId', params.targetEntityId);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await this.requestEnvelope<any[]>(`/ai/actions${queryString}`);
+
+    return {
+      actions: Array.isArray(res.data) ? res.data : [],
+      pagination: res.pagination || {
+        page: params?.page || 1,
+        pageSize: params?.pageSize || 20,
+        total: Array.isArray(res.data) ? res.data.length : 0,
+        totalPages: 1,
+      },
+    };
+  }
+
+  /**
+   * Fetches single AI Action by ID
+   */
+  public async getAiAction(id: string): Promise<any> {
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}`);
+  }
+
+  /**
+   * Proposes a new AI Action
+   */
+  public async proposeAiAction(dto: any): Promise<any> {
+    const idempotencyKey = `ai_action_propose_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    return this.request<any>('/ai/actions', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Requests review on an AI Action
+   */
+  public async reviewAiAction(id: string): Promise<any> {
+    const idempotencyKey = `ai_action_review_${id}_${Date.now()}`;
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}/review`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Approves an AI Action
+   */
+  public async approveAiAction(id: string, reason?: string): Promise<any> {
+    const idempotencyKey = `ai_action_approve_${id}_${Date.now()}`;
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}/approve`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Rejects an AI Action
+   */
+  public async rejectAiAction(id: string, reason: string): Promise<any> {
+    const idempotencyKey = `ai_action_reject_${id}_${Date.now()}`;
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Cancels an AI Action
+   */
+  public async cancelAiAction(id: string): Promise<any> {
+    const idempotencyKey = `ai_action_cancel_${id}_${Date.now()}`;
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}/cancel`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Executes an approved AI Action
+   */
+  public async executeAiAction(id: string): Promise<any> {
+    const idempotencyKey = `ai_action_execute_${id}_${Date.now()}`;
+    return this.request<any>(`/ai/actions/${encodeURIComponent(id)}/execute`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Fetches evidence for an AI Action
+   */
+  public async getAiActionEvidence(id: string): Promise<any[]> {
+    return this.request<any[]>(`/ai/actions/${encodeURIComponent(id)}/evidence`);
+  }
+
+  /**
+   * Fetches executions logs for an AI Action
+   */
+  public async getAiActionExecution(id: string): Promise<any[]> {
+    return this.request<any[]>(`/ai/actions/${encodeURIComponent(id)}/execution`);
+  }
+
+  /**
+   * Fetches verification logs for an AI Action
+   */
+  public async getAiActionVerification(id: string): Promise<any[]> {
+    return this.request<any[]>(`/ai/actions/${encodeURIComponent(id)}/verification`);
+  }
 }
 
 /**

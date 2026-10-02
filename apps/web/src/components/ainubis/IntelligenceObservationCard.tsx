@@ -25,9 +25,11 @@ export interface IntelligenceObservationCardProps {
   onApprove?: (obs: AIObservationRecord) => void;
   onReject?: (obs: AIObservationRecord) => void;
   onDismiss?: (obs: AIObservationRecord) => void;
+  onProposeAction?: (obs: AIObservationRecord) => void;
   allowReview?: boolean;
   allowApprove?: boolean;
   allowDismiss?: boolean;
+  allowPropose?: boolean;
   className?: string;
 }
 
@@ -39,9 +41,11 @@ export function IntelligenceObservationCard({
   onApprove,
   onReject,
   onDismiss,
+  onProposeAction,
   allowReview = false,
   allowApprove = false,
   allowDismiss = false,
+  allowPropose = false,
   className = '',
 }: IntelligenceObservationCardProps) {
   const [isEvidenceExpanded, setIsEvidenceExpanded] = useState(mode === 'detail');
@@ -366,6 +370,18 @@ export function IntelligenceObservationCard({
               className="text-slate-400 hover:text-slate-200"
             >
               Dismiss
+            </Button>
+          )}
+
+          {allowPropose && observation.status === IntelligenceStatus.APPROVED && onProposeAction && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onProposeAction(observation)}
+              className="bg-sky-600 hover:bg-sky-700 text-white flex items-center gap-1.5"
+            >
+              <Icon name="zap" size="xs" />
+              <span>Propose CRM Action</span>
             </Button>
           )}
         </div>

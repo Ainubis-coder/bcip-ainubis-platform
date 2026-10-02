@@ -312,3 +312,134 @@ export interface AIMonitoringStatusSummary {
   recentExecutions: AIMonitoringExecutionRecord[];
   recentErrors: Array<{ timestamp: string; message: string; capability?: string }>;
 }
+
+// ============================================================================
+// AI ACTION FRAMEWORK MODELS & ENUMS (Phase 2E-004)
+// ============================================================================
+
+export const AIActionType = {
+  CREATE_TASK: 'CREATE_TASK',
+  CREATE_ACTIVITY: 'CREATE_ACTIVITY',
+  UPDATE_LEAD_STATUS: 'UPDATE_LEAD_STATUS',
+  UPDATE_OPPORTUNITY_STAGE: 'UPDATE_OPPORTUNITY_STAGE',
+  UPDATE_OPPORTUNITY_ATTRIBUTES: 'UPDATE_OPPORTUNITY_ATTRIBUTES',
+} as const;
+
+export type AIActionType = (typeof AIActionType)[keyof typeof AIActionType];
+
+export const AIActionStatus = {
+  PROPOSED: 'PROPOSED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  EXECUTING: 'EXECUTING',
+  EXECUTED: 'EXECUTED',
+  FAILED: 'FAILED',
+  VERIFIED: 'VERIFIED',
+} as const;
+
+export type AIActionStatus = (typeof AIActionStatus)[keyof typeof AIActionStatus];
+
+export const AIActionApprovalRequirement = {
+  NONE: 'NONE',
+  HUMAN_APPROVAL: 'HUMAN_APPROVAL',
+  ELEVATED_APPROVAL: 'ELEVATED_APPROVAL',
+} as const;
+
+export type AIActionApprovalRequirement = (typeof AIActionApprovalRequirement)[keyof typeof AIActionApprovalRequirement];
+
+export interface AIActionRecord {
+  id: string;
+  tenantId: string;
+  observationId: string;
+  capabilityId: string;
+  actionType: AIActionType;
+  status: AIActionStatus;
+  title: string;
+  description: string;
+  targetEntityType: string;
+  targetEntityId: string;
+  proposedChanges: Record<string, unknown>;
+  currentValues: Record<string, unknown>;
+  proposedValues: Record<string, unknown>;
+  rationale: string;
+  confidenceLevel: string;
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  approvalRequirement: AIActionApprovalRequirement;
+  idempotencyKey?: string;
+  failureReason?: string;
+  verificationResult?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+  createdBy?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  executedAt?: string;
+  verifiedAt?: string;
+}
+
+export interface AIActionEvidence {
+  id: string;
+  tenantId: string;
+  actionId: string;
+  entityType: string;
+  entityId: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIActionApproval {
+  id: string;
+  actionId: string;
+  tenantId: string;
+  approverId: string;
+  approvalStatus: 'APPROVED' | 'REJECTED';
+  approvedAt: string;
+  reason?: string;
+  requestId?: string;
+  correlationId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIActionExecution {
+  id: string;
+  actionId: string;
+  tenantId: string;
+  status: 'SUCCESS' | 'FAILED';
+  executedAt: string;
+  executorId: string;
+  error?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIActionVerification {
+  id: string;
+  actionId: string;
+  tenantId: string;
+  status: 'VERIFIED' | 'FAILED';
+  verifiedAt: string;
+  expectedState: Record<string, unknown>;
+  actualState: Record<string, unknown>;
+  failureReason?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIActionTemplate {
+  templateId: string;
+  actionType: AIActionType;
+  triggerCapability: string;
+  defaultTitle: string;
+  description: string;
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  approvalRequirement: AIActionApprovalRequirement;
+  proposedChanges: Record<string, unknown>;
+  verificationCriteria: Record<string, unknown>;
+}
+

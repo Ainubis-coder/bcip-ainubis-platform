@@ -2,6 +2,8 @@ import { BackgroundJob, JobResult } from '../queue/job-queue';
 import {
   ainubisPipelineHygieneService,
   ainubisContinuousMonitorService,
+  ainubisActionExecutionService,
+  ainubisActionVerificationService,
   AICapability,
 } from '@bcip/database';
 
@@ -144,6 +146,58 @@ jobRegistry.register('ai.ainubis_scheduled_all', async (job) => {
       jobId: job.id,
       durationMs: Date.now() - start,
       error: (err as Error).message,
+    };
+  }
+});
+
+jobRegistry.register('ai.ainubis_action_execute', async (job) => {
+  const start = Date.now();
+  const { tenantId, actionId, executorUserId, idempotencyKey } = job.payload as {
+    tenantId: string;
+    actionId: string;
+    executorUserId: string;
+    idempotencyKey?: string;
+  };
+
+  try {
+    const res = await ainubisActionExecutionService.executeAction(tenantId, actionId, executorUserId, idempotencyKey);
+    return {
+      success: true,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      metadata: { finalStatus: res.status },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      error: err.message,
+    };
+  }
+});
+
+jobRegistry.register('ai.ainubis_action_verify', async (job) => {
+  const start = Date.now();
+  const { tenantId, actionId } = job.payload as {
+    tenantId: string;
+    actionId: string;
+  };
+
+  try {
+    const verified = await ainubisActionVerificationService.verifyAction(tenantId, actionId);
+    return {
+      success: true,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      metadata: { verified },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      error: err.message,
     };
   }
 });

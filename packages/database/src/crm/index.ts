@@ -6,6 +6,7 @@
 export * from './enums.ts';
 export * from './types.ts';
 export * from './ai-types.ts';
+export * from './workflow-types.ts';
 export * from './events/crm-events.ts';
 export * from './audit/crm-audit.ts';
 
@@ -21,8 +22,11 @@ export * from './repositories/activity.repository.ts';
 export * from './repositories/task.repository.ts';
 export * from './repositories/ai-observation.repository.ts';
 export * from './repositories/ai-monitoring-execution.repository.ts';
+export * from './repositories/ai-action.repository.ts';
 export * from './repositories/proposal.repository.ts';
 export * from './repositories/contract.repository.ts';
+export * from './repositories/automation-workflow.repository.ts';
+export * from './repositories/workflow-run.repository.ts';
 
 // Domain Services
 export * from './services/organisation.service.ts';
@@ -41,3 +45,7 @@ export * from './services/ainubis-summary.service.ts';
 export * from './services/ainubis-crm-health.service.ts';
 export * from './services/ainubis-capability.registry.ts';
 export * from './services/ainubis-continuous-monitor.service.ts';
+export * from './services/ainubis-action-template.registry.ts';
+export * from './services/ainubis-action-verification.service.ts';
+export * from './services/ainubis-action-execution.service.ts';
+export * from './services/ainubis-workflow-orchestration.service.ts';
