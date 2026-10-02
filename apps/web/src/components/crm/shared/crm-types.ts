@@ -816,4 +816,459 @@ export interface SchemeProspectsListResponse {
   };
 }
 
+// ============================================================================
+// ACTIVITIES & TASKS TYPES (Phase 2D-005)
+// ============================================================================
+
+export const ActivityType = {
+  CALL: 'CALL',
+  EMAIL: 'EMAIL',
+  MEETING: 'MEETING',
+  NOTE: 'NOTE',
+  DEMO: 'DEMO',
+  DISCOVERY: 'DISCOVERY',
+  PROPOSAL: 'PROPOSAL',
+  CONTRACT: 'CONTRACT',
+  OTHER: 'OTHER',
+} as const;
+
+export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType];
+
+export const ACTIVITY_TYPE_CONFIG: Record<
+  ActivityType,
+  {
+    label: string;
+    iconName: string;
+    colorClasses: {
+      text: string;
+      bg: string;
+      border: string;
+    };
+  }
+> = {
+  [ActivityType.CALL]: {
+    label: 'Phone Call',
+    iconName: 'phone',
+    colorClasses: { text: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' },
+  },
+  [ActivityType.EMAIL]: {
+    label: 'Email Exchange',
+    iconName: 'mail',
+    colorClasses: { text: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/30' },
+  },
+  [ActivityType.MEETING]: {
+    label: 'Meeting',
+    iconName: 'users',
+    colorClasses: { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+  },
+  [ActivityType.NOTE]: {
+    label: 'Internal Note',
+    iconName: 'file-text',
+    colorClasses: { text: 'text-slate-300', bg: 'bg-slate-500/10', border: 'border-slate-500/30' },
+  },
+  [ActivityType.DEMO]: {
+    label: 'Product Demonstration',
+    iconName: 'tv',
+    colorClasses: { text: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' },
+  },
+  [ActivityType.DISCOVERY]: {
+    label: 'Discovery Call',
+    iconName: 'search',
+    colorClasses: { text: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30' },
+  },
+  [ActivityType.PROPOSAL]: {
+    label: 'Proposal Review',
+    iconName: 'file',
+    colorClasses: { text: 'text-indigo-400', bg: 'bg-indigo-500/10', border: 'border-indigo-500/30' },
+  },
+  [ActivityType.CONTRACT]: {
+    label: 'Contract Signing',
+    iconName: 'check-circle',
+    colorClasses: { text: 'text-teal-400', bg: 'bg-teal-500/10', border: 'border-teal-500/30' },
+  },
+  [ActivityType.OTHER]: {
+    label: 'Other Interaction',
+    iconName: 'activity',
+    colorClasses: { text: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/30' },
+  },
+};
+
+export interface Activity {
+  id: string;
+  tenantId: string;
+  activityType: ActivityType;
+  subject: string;
+  description?: string;
+  activityAt: string;
+  completedAt?: string;
+  ownerUserId?: string;
+  createdBy: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+}
+
+export interface CreateActivityDto {
+  activityType: ActivityType;
+  subject: string;
+  description?: string;
+  activityAt?: string;
+  completedAt?: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+}
+
+export interface UpdateActivityDto {
+  activityType?: ActivityType;
+  subject?: string;
+  description?: string;
+  activityAt?: string;
+  completedAt?: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+}
+
+export interface ActivitiesListResponse {
+  activities: Activity[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export const TaskStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+} as const;
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
+
+export const TASK_STATUS_CONFIG: Record<
+  TaskStatus,
+  {
+    label: string;
+    colorClasses: {
+      text: string;
+      bg: string;
+      dot: string;
+      border: string;
+    };
+  }
+> = {
+  [TaskStatus.OPEN]: {
+    label: 'Open',
+    colorClasses: { text: 'text-sky-400', bg: 'bg-sky-500/10', dot: 'bg-sky-400', border: 'border-sky-500/30' },
+  },
+  [TaskStatus.IN_PROGRESS]: {
+    label: 'In Progress',
+    colorClasses: { text: 'text-amber-400', bg: 'bg-amber-500/10', dot: 'bg-amber-400', border: 'border-amber-500/30' },
+  },
+  [TaskStatus.COMPLETED]: {
+    label: 'Completed',
+    colorClasses: { text: 'text-emerald-400', bg: 'bg-emerald-500/10', dot: 'bg-emerald-400', border: 'border-emerald-500/30' },
+  },
+  [TaskStatus.CANCELLED]: {
+    label: 'Cancelled',
+    colorClasses: { text: 'text-slate-400', bg: 'bg-slate-500/10', dot: 'bg-slate-400', border: 'border-slate-500/30' },
+  },
+};
+
+export const TaskPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT',
+} as const;
+
+export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority];
+
+export const TASK_PRIORITY_CONFIG: Record<
+  TaskPriority,
+  {
+    label: string;
+    colorClasses: {
+      text: string;
+      bg: string;
+      border: string;
+    };
+  }
+> = {
+  [TaskPriority.LOW]: {
+    label: 'Low Priority',
+    colorClasses: { text: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/30' },
+  },
+  [TaskPriority.MEDIUM]: {
+    label: 'Medium Priority',
+    colorClasses: { text: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' },
+  },
+  [TaskPriority.HIGH]: {
+    label: 'High Priority',
+    colorClasses: { text: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' },
+  },
+  [TaskPriority.URGENT]: {
+    label: 'Urgent',
+    colorClasses: { text: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30' },
+  },
+};
+
+export interface CRMTask {
+  id: string;
+  tenantId: string;
+  title: string;
+  description?: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assignedTo?: string;
+  createdBy?: string;
+  dueAt?: string;
+  completedAt?: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+}
+
+export interface CreateCRMTaskDto {
+  title: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  assignedTo?: string;
+  dueAt?: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+}
+
+export interface UpdateCRMTaskDto {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  assignedTo?: string;
+  dueAt?: string;
+  leadId?: string;
+  contactId?: string;
+  organisationId?: string;
+  opportunityId?: string;
+}
+
+export interface TasksListResponse {
+  tasks: CRMTask[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// ============================================================================
+// AINUBIS CRM INTELLIGENCE TYPES (Phase 2E-001)
+// ============================================================================
+
+export const IntelligenceType = {
+  OBSERVATION: 'OBSERVATION',
+  INSIGHT: 'INSIGHT',
+  RECOMMENDATION: 'RECOMMENDATION',
+  ALERT: 'ALERT',
+  HUMAN_APPROVAL_REQUIRED: 'HUMAN_APPROVAL_REQUIRED',
+} as const;
+
+export type IntelligenceType = (typeof IntelligenceType)[keyof typeof IntelligenceType];
+
+export const IntelligenceStatus = {
+  DRAFT: 'DRAFT',
+  GENERATED: 'GENERATED',
+  REVIEWED: 'REVIEWED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  EXECUTED: 'EXECUTED',
+  EXPIRED: 'EXPIRED',
+  DISMISSED: 'DISMISSED',
+  RESOLVED: 'RESOLVED',
+  REOPENED: 'REOPENED',
+} as const;
+
+export type IntelligenceStatus = (typeof IntelligenceStatus)[keyof typeof IntelligenceStatus];
+
+export const ConfidenceLevel = {
+  VERY_LOW: 'VERY_LOW',
+  LOW: 'LOW',
+  MODERATE: 'MODERATE',
+  HIGH: 'HIGH',
+  VERY_HIGH: 'VERY_HIGH',
+} as const;
+
+export type ConfidenceLevel = (typeof ConfidenceLevel)[keyof typeof ConfidenceLevel];
+
+export const ApprovalRequirement = {
+  INFORMATIONAL: 'INFORMATIONAL',
+  RECOMMENDATION: 'RECOMMENDATION',
+  HUMAN_APPROVAL_REQUIRED: 'HUMAN_APPROVAL_REQUIRED',
+  EXECUTABLE_ACTION: 'EXECUTABLE_ACTION',
+} as const;
+
+export type ApprovalRequirement = (typeof ApprovalRequirement)[keyof typeof ApprovalRequirement];
+
+export const AICapability = {
+  CRM_DATA_QUALITY: 'CRM_DATA_QUALITY',
+  CRM_PIPELINE_HYGIENE: 'CRM_PIPELINE_HYGIENE',
+  CRM_LEAD_QUALIFICATION: 'CRM_LEAD_QUALIFICATION',
+  CRM_LEAD_HYGIENE: 'CRM_LEAD_HYGIENE',
+  CRM_ORGANISATION_HYGIENE: 'CRM_ORGANISATION_HYGIENE',
+  CRM_SCHEME_PROSPECT_HYGIENE: 'CRM_SCHEME_PROSPECT_HYGIENE',
+  CRM_TASK_HYGIENE: 'CRM_TASK_HYGIENE',
+  CRM_ACTIVITY_HYGIENE: 'CRM_ACTIVITY_HYGIENE',
+  CRM_DUPLICATE_DETECTION: 'CRM_DUPLICATE_DETECTION',
+  CRM_ACTIVITY_SUMMARY: 'CRM_ACTIVITY_SUMMARY',
+  CRM_TASK_PRIORITISATION: 'CRM_TASK_PRIORITISATION',
+  CRM_DEAL_RISK: 'CRM_DEAL_RISK',
+  CRM_PROPOSAL_ASSISTANCE: 'CRM_PROPOSAL_ASSISTANCE',
+  CRM_CLIENT_RELATIONSHIP_INTELLIGENCE: 'CRM_CLIENT_RELATIONSHIP_INTELLIGENCE',
+  CRM_SCHEME_INTELLIGENCE: 'CRM_SCHEME_INTELLIGENCE',
+} as const;
+
+export type AICapability = (typeof AICapability)[keyof typeof AICapability];
+
+export interface EvidenceReference {
+  id: string;
+  tenantId: string;
+  entityType: string;
+  entityId: string;
+  field?: string;
+  value?: unknown;
+  source: string;
+  evidenceType: string;
+  relevance: number;
+  timestamp: string;
+}
+
+export interface SuggestedAction {
+  actionType: string;
+  description: string;
+  payload?: Record<string, unknown>;
+}
+
+export interface AIObservationRecord {
+  id: string;
+  tenantId: string;
+  capability: AICapability;
+  intelligenceType: IntelligenceType;
+  title: string;
+  summary: string;
+  observation: string;
+  confidenceScore: number;
+  confidenceLevel: ConfidenceLevel;
+  evidence: EvidenceReference[];
+  targetEntityType?: string;
+  targetEntityId?: string;
+  suggestedAction?: SuggestedAction;
+  approvalRequirement: ApprovalRequirement;
+  status: IntelligenceStatus;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectedBy?: string;
+  rejectedAt?: string;
+  rejectedReason?: string;
+  dismissedBy?: string;
+  dismissedAt?: string;
+  modelProvider?: string;
+  modelIdentifier?: string;
+  triggerEvent?: string;
+  correlationId?: string;
+  expiresAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const HealthStatus = {
+  HEALTHY: 'HEALTHY',
+  WARNING: 'WARNING',
+  ATTENTION_REQUIRED: 'ATTENTION_REQUIRED',
+} as const;
+
+export type HealthStatus = (typeof HealthStatus)[keyof typeof HealthStatus];
+
+export const CRMHealthCategoryKey = {
+  PIPELINE: 'pipeline',
+  LEADS: 'leads',
+  ORGANISATIONS: 'organisations',
+  SCHEME_PROSPECTS: 'schemeProspects',
+  TASKS_AND_ACTIVITIES: 'tasksAndActivities',
+} as const;
+
+export type CRMHealthCategoryKey = (typeof CRMHealthCategoryKey)[keyof typeof CRMHealthCategoryKey];
+
+export interface CRMHealthMetricItem {
+  id: string;
+  label: string;
+  count: number;
+  status: HealthStatus;
+  description: string;
+}
+
+export interface CRMHealthCategorySummary {
+  key: CRMHealthCategoryKey;
+  title: string;
+  status: HealthStatus;
+  score: number; // 0 - 100
+  totalEntities: number;
+  issueCount: number;
+  metrics: CRMHealthMetricItem[];
+  topObservations: AIObservationRecord[];
+  lastEvaluatedAt: string;
+}
+
+export interface AinubisDashboardSummary {
+  tenantId: string;
+  totalActive: number;
+  requiringAttention: number;
+  highPriority: number;
+  underReview: number;
+  approved: number;
+  dismissed: number;
+  rejected: number;
+  executed: number;
+  recentObservations: AIObservationRecord[];
+  byCapability: Record<string, number>;
+  byType: Record<string, number>;
+  byStatus: Record<string, number>;
+  healthCategories: Record<CRMHealthCategoryKey, CRMHealthCategorySummary>;
+  overallHealthScore: number;
+  overallHealthStatus: HealthStatus;
+  generatedAt: string;
+}
+
+export interface ContextualIntelligenceResponse {
+  tenantId: string;
+  targetEntityType: string;
+  targetEntityId: string;
+  observations: AIObservationRecord[];
+  totalObservations: number;
+  issueCount: number;
+  status: HealthStatus;
+  lastAnalyzedAt: string;
+}
+
+
+
 

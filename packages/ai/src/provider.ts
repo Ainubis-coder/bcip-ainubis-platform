@@ -1,8 +1,11 @@
-export type SupportedAIModel =
-  | 'gemini-2.5-flash'
-  | 'gemini-2.5-pro'
-  | 'claude-3-7-sonnet'
-  | 'gpt-4o';
+export const SUPPORTED_AI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.5-pro',
+  'claude-3-7-sonnet',
+  'gpt-4o',
+] as const;
+
+export type SupportedAIModel = (typeof SUPPORTED_AI_MODELS)[number];
 
 export interface ModelGenerationRequest {
   prompt: string;

@@ -31,6 +31,21 @@ import {
   SchemeProspect,
   CreateSchemeProspectDto,
   UpdateSchemeProspectDto,
+  Activity,
+  ActivityType,
+  CreateActivityDto,
+  UpdateActivityDto,
+  CRMTask,
+  TaskStatus,
+  TaskPriority,
+  CreateCRMTaskDto,
+  UpdateCRMTaskDto,
+  AIObservationRecord,
+  AICapability,
+  IntelligenceType,
+  IntelligenceStatus,
+  AinubisDashboardSummary,
+  ContextualIntelligenceResponse,
 } from './crm-types';
 import { normalizeUserRole } from './crm-permissions';
 
@@ -572,6 +587,314 @@ export class CrmApiClient {
   public async deleteSchemeProspect(id: string): Promise<{ id: string; deleted: boolean }> {
     return this.request<{ id: string; deleted: boolean }>(`/scheme-prospects/${encodeURIComponent(id)}`, {
       method: 'DELETE',
+    });
+  }
+
+  // ==========================================================================
+  // ACTIVITIES
+  // ==========================================================================
+
+  /**
+   * Lists activities with server-side pagination, search, and filtering
+   */
+  public async listActivities(params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    activityType?: ActivityType;
+    leadId?: string;
+    contactId?: string;
+    organisationId?: string;
+    opportunityId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{ activities: Activity[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }> {
+    const query = new URLSearchParams();
+    if (params?.page) query.set('page', String(params.page));
+    if (params?.pageSize) query.set('pageSize', String(params.pageSize));
+    if (params?.search) query.set('search', params.search);
+    if (params?.activityType) query.set('activityType', params.activityType);
+    if (params?.leadId) query.set('leadId', params.leadId);
+    if (params?.contactId) query.set('contactId', params.contactId);
+    if (params?.organisationId) query.set('organisationId', params.organisationId);
+    if (params?.opportunityId) query.set('opportunityId', params.opportunityId);
+    if (params?.sortBy) query.set('sortBy', params.sortBy);
+    if (params?.sortOrder) query.set('sortOrder', params.sortOrder);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await this.requestEnvelope<Activity[]>(`/activities${queryString}`);
+
+    return {
+      activities: Array.isArray(res.data) ? res.data : [],
+      pagination: res.pagination || {
+        page: params?.page || 1,
+        pageSize: params?.pageSize || 20,
+        total: Array.isArray(res.data) ? res.data.length : 0,
+        totalPages: 1,
+      },
+    };
+  }
+
+  /**
+   * Retrieves single activity by ID
+   */
+  public async getActivity(id: string): Promise<Activity> {
+    return this.request<Activity>(`/activities/${encodeURIComponent(id)}`);
+  }
+
+  /**
+   * Creates a new activity
+   */
+  public async createActivity(dto: CreateActivityDto): Promise<Activity> {
+    const idempotencyKey = `act_create_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    return this.request<Activity>('/activities', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Updates an existing activity
+   */
+  public async updateActivity(id: string, dto: UpdateActivityDto): Promise<Activity> {
+    const idempotencyKey = `act_update_${id}_${Date.now()}`;
+    return this.request<Activity>(`/activities/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Soft-deletes an activity
+   */
+  public async deleteActivity(id: string): Promise<{ id: string; deleted: boolean }> {
+    return this.request<{ id: string; deleted: boolean }>(`/activities/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // ==========================================================================
+  // TASKS
+  // ==========================================================================
+
+  /**
+   * Lists tasks with server-side pagination, search, and filtering
+   */
+  public async listTasks(params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    status?: TaskStatus;
+    priority?: TaskPriority;
+    assignedTo?: string;
+    leadId?: string;
+    opportunityId?: string;
+    organisationId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{ tasks: CRMTask[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }> {
+    const query = new URLSearchParams();
+    if (params?.page) query.set('page', String(params.page));
+    if (params?.pageSize) query.set('pageSize', String(params.pageSize));
+    if (params?.search) query.set('search', params.search);
+    if (params?.status) query.set('status', params.status);
+    if (params?.priority) query.set('priority', params.priority);
+    if (params?.assignedTo) query.set('assignedTo', params.assignedTo);
+    if (params?.leadId) query.set('leadId', params.leadId);
+    if (params?.opportunityId) query.set('opportunityId', params.opportunityId);
+    if (params?.organisationId) query.set('organisationId', params.organisationId);
+    if (params?.sortBy) query.set('sortBy', params.sortBy);
+    if (params?.sortOrder) query.set('sortOrder', params.sortOrder);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await this.requestEnvelope<CRMTask[]>(`/tasks${queryString}`);
+
+    return {
+      tasks: Array.isArray(res.data) ? res.data : [],
+      pagination: res.pagination || {
+        page: params?.page || 1,
+        pageSize: params?.pageSize || 20,
+        total: Array.isArray(res.data) ? res.data.length : 0,
+        totalPages: 1,
+      },
+    };
+  }
+
+  /**
+   * Retrieves single task by ID
+   */
+  public async getTask(id: string): Promise<CRMTask> {
+    return this.request<CRMTask>(`/tasks/${encodeURIComponent(id)}`);
+  }
+
+  /**
+   * Creates a new task
+   */
+  public async createTask(dto: CreateCRMTaskDto): Promise<CRMTask> {
+    const idempotencyKey = `tsk_create_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    return this.request<CRMTask>('/tasks', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Updates an existing task
+   */
+  public async updateTask(id: string, dto: UpdateCRMTaskDto): Promise<CRMTask> {
+    const idempotencyKey = `tsk_update_${id}_${Date.now()}`;
+    return this.request<CRMTask>(`/tasks/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Soft-deletes a task
+   */
+  public async deleteTask(id: string): Promise<{ id: string; deleted: boolean }> {
+    return this.request<{ id: string; deleted: boolean }>(`/tasks/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Marks a task as COMPLETED
+   */
+  public async completeTask(id: string): Promise<CRMTask> {
+    const idempotencyKey = `tsk_complete_${id}_${Date.now()}`;
+    return this.request<CRMTask>(`/tasks/${encodeURIComponent(id)}/complete`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  // ==========================================================================
+  // AINUBIS CRM INTELLIGENCE
+  // ==========================================================================
+
+  /**
+   * Lists AI observations & recommendations with search and capability filters
+   */
+  public async listAIObservations(params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    capability?: AICapability;
+    intelligenceType?: IntelligenceType;
+    status?: IntelligenceStatus;
+    targetEntityType?: string;
+    targetEntityId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{ observations: AIObservationRecord[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }> {
+    const query = new URLSearchParams();
+    if (params?.page) query.set('page', String(params.page));
+    if (params?.pageSize) query.set('pageSize', String(params.pageSize));
+    if (params?.search) query.set('search', params.search);
+    if (params?.capability) query.set('capability', params.capability);
+    if (params?.intelligenceType) query.set('intelligenceType', params.intelligenceType);
+    if (params?.status) query.set('status', params.status);
+    if (params?.targetEntityType) query.set('targetEntityType', params.targetEntityType);
+    if (params?.targetEntityId) query.set('targetEntityId', params.targetEntityId);
+    if (params?.sortBy) query.set('sortBy', params.sortBy);
+    if (params?.sortOrder) query.set('sortOrder', params.sortOrder);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await this.requestEnvelope<AIObservationRecord[]>(`/ai/observations${queryString}`);
+
+    return {
+      observations: Array.isArray(res.data) ? res.data : [],
+      pagination: res.pagination || {
+        page: params?.page || 1,
+        pageSize: params?.pageSize || 20,
+        total: Array.isArray(res.data) ? res.data.length : 0,
+        totalPages: 1,
+      },
+    };
+  }
+
+  /**
+   * Fetches the executive dashboard summary and category health metrics
+   */
+  public async getAiSummary(): Promise<AinubisDashboardSummary> {
+    return this.request<AinubisDashboardSummary>('/ai/summary');
+  }
+
+  /**
+   * Fetches contextual intelligence observations for a specific CRM entity
+   */
+  public async getAiContext(entityType: string, entityId: string): Promise<ContextualIntelligenceResponse> {
+    return this.request<ContextualIntelligenceResponse>(
+      `/ai/context/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`
+    );
+  }
+
+  /**
+   * Fetches single AI observation by ID
+   */
+  public async getAIObservation(id: string): Promise<AIObservationRecord> {
+    return this.request<AIObservationRecord>(`/ai/observations/${encodeURIComponent(id)}`);
+  }
+
+  /**
+   * Triggers an AI capability analysis
+   */
+  public async analyzeAIObservation(capability: AICapability | string = 'CRM_PIPELINE_HYGIENE', targetEntityId?: string): Promise<any> {
+    const idempotencyKey = `ai_analyze_${capability}_${targetEntityId || 'portfolio'}_${Date.now()}`;
+    return this.request<any>('/ai/observations/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ capability, targetEntityId }),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Marks AI observation as REVIEWED
+   */
+  public async reviewAIObservation(id: string): Promise<AIObservationRecord> {
+    const idempotencyKey = `ai_review_${id}_${Date.now()}`;
+    return this.request<AIObservationRecord>(`/ai/observations/${encodeURIComponent(id)}/review`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Approves an AI recommendation
+   */
+  public async approveAIObservation(id: string): Promise<AIObservationRecord> {
+    const idempotencyKey = `ai_approve_${id}_${Date.now()}`;
+    return this.request<AIObservationRecord>(`/ai/observations/${encodeURIComponent(id)}/approve`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Rejects an AI recommendation
+   */
+  public async rejectAIObservation(id: string, reason?: string): Promise<AIObservationRecord> {
+    const idempotencyKey = `ai_reject_${id}_${Date.now()}`;
+    return this.request<AIObservationRecord>(`/ai/observations/${encodeURIComponent(id)}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+      headers: { 'X-Idempotency-Key': idempotencyKey },
+    });
+  }
+
+  /**
+   * Dismisses an AI observation
+   */
+  public async dismissAIObservation(id: string): Promise<AIObservationRecord> {
+    const idempotencyKey = `ai_dismiss_${id}_${Date.now()}`;
+    return this.request<AIObservationRecord>(`/ai/observations/${encodeURIComponent(id)}/dismiss`, {
+      method: 'POST',
+      headers: { 'X-Idempotency-Key': idempotencyKey },
     });
   }
 }

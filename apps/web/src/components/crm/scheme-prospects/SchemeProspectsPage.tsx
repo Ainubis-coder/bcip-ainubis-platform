@@ -27,6 +27,7 @@ import { SchemeProspectsEmptyState } from './SchemeProspectsEmptyState';
 import { SchemeProspectsErrorState } from './SchemeProspectsErrorState';
 import { SchemeProspectDetailModal } from './SchemeProspectDetailModal';
 import { SchemeProspectFormModal } from './SchemeProspectFormModal';
+import { AinubisContextualPanel } from '../../ainubis/AinubisContextualPanel';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface SchemeProspectsPageProps {
@@ -246,6 +247,13 @@ export function SchemeProspectsPage({
         <SchemeProspectsSkeleton />
       ) : (
         <div className="space-y-4">
+          {/* Ainubis Scheme Prospect Contextual Intelligence */}
+          <AinubisContextualPanel
+            activeTenant={activeTenant}
+            user={user}
+            entityType="scheme_prospect"
+          />
+
           {/* Summary KPI Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-slate-900/60 border border-slate-800/80 rounded-lg p-3">

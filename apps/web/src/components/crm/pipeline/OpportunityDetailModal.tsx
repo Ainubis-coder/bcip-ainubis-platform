@@ -17,6 +17,9 @@ interface OpportunityDetailModalProps {
   onClose: () => void;
   onMoveStage: (opportunity: Opportunity) => void;
   fetchHistory: (opportunityId: string) => Promise<OpportunityStageHistory[]>;
+  onNavigateToOrganisation?: (organisationId: string) => void;
+  onNavigateToLead?: (leadId: string) => void;
+  onNavigateToSchemeProspect?: (schemeProspectId: string) => void;
 }
 
 export function OpportunityDetailModal({
@@ -26,6 +29,9 @@ export function OpportunityDetailModal({
   onClose,
   onMoveStage,
   fetchHistory,
+  onNavigateToOrganisation,
+  onNavigateToLead,
+  onNavigateToSchemeProspect,
 }: OpportunityDetailModalProps) {
   const [history, setHistory] = useState<OpportunityStageHistory[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -130,6 +136,76 @@ export function OpportunityDetailModal({
                 <span className="text-slate-500 text-[11px] ml-auto font-mono">
                   {formatDate(opportunity.nextActionAt)}
                 </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Linked CRM Relationships */}
+        {(opportunity.organisationId || opportunity.leadId || opportunity.schemeProspectId) && (
+          <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800 space-y-2">
+            <h5 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              Linked CRM Relationships
+            </h5>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+              {opportunity.organisationId && (
+                <div className="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                  <span className="text-slate-400 font-sans">Organisation:</span>
+                  {onNavigateToOrganisation ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onNavigateToOrganisation(opportunity.organisationId!);
+                      }}
+                      className="text-sky-400 hover:text-sky-300 underline"
+                    >
+                      View Org →
+                    </button>
+                  ) : (
+                    <span className="text-slate-200">{opportunity.organisationId}</span>
+                  )}
+                </div>
+              )}
+
+              {opportunity.leadId && (
+                <div className="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                  <span className="text-slate-400 font-sans">Origin Lead:</span>
+                  {onNavigateToLead ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onNavigateToLead(opportunity.leadId!);
+                      }}
+                      className="text-sky-400 hover:text-sky-300 underline"
+                    >
+                      View Lead →
+                    </button>
+                  ) : (
+                    <span className="text-slate-200">{opportunity.leadId}</span>
+                  )}
+                </div>
+              )}
+
+              {opportunity.schemeProspectId && (
+                <div className="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                  <span className="text-slate-400 font-sans">Scheme Prospect:</span>
+                  {onNavigateToSchemeProspect ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onNavigateToSchemeProspect(opportunity.schemeProspectId!);
+                      }}
+                      className="text-sky-400 hover:text-sky-300 underline"
+                    >
+                      View Prospect →
+                    </button>
+                  ) : (
+                    <span className="text-slate-200">{opportunity.schemeProspectId}</span>
+                  )}
+                </div>
               )}
             </div>
           </div>

@@ -14,6 +14,7 @@ import { activityService } from '../crm/services/activity.service.ts';
 import { taskService } from '../crm/services/task.service.ts';
 import { proposalService } from '../crm/services/proposal.service.ts';
 import { contractService } from '../crm/services/contract.service.ts';
+import { ainubisCrmHealthService } from '../crm/services/ainubis-crm-health.service.ts';
 import {
   OrganisationType,
   OrganisationStatus,
@@ -608,7 +609,10 @@ export async function seedCrmDevelopmentData(
     opportunityLost,
   ];
 
-  console.log(`[BCIP CRM Seed] Completed seeding: 1 campaign, 2 organisations, 2 contacts, 2 scheme prospects, ${allLeads.length} leads, ${allOpportunities.length} opportunities, 2 activities, 2 tasks, 1 proposal, 1 contract.`);
+  // Evaluate initial evidence-grounded CRM intelligence observations
+  const initialObservations = await ainubisCrmHealthService.evaluateTenantCrmHealth(tenantId);
+
+  console.log(`[BCIP CRM Seed] Completed seeding: 1 campaign, 2 organisations, 2 contacts, 2 scheme prospects, ${allLeads.length} leads, ${allOpportunities.length} opportunities, 2 activities, 2 tasks, 1 proposal, 1 contract, ${initialObservations.length} Ainubis observations.`);
 
   return {
     tenantId,

@@ -112,6 +112,16 @@ export abstract class BaseCrmRepository<T extends BaseEntity> {
     return results.slice(offset, offset + limit);
   }
 
+  public findAllUnscoped(): T[] {
+    const results: T[] = [];
+    for (const item of this.items.values()) {
+      if (!item.deletedAt) {
+        results.push(JSON.parse(JSON.stringify(item)));
+      }
+    }
+    return results;
+  }
+
   public async create(entity: T): Promise<T> {
     const now = new Date().toISOString();
     const toSave: T = {

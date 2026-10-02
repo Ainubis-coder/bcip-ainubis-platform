@@ -2,6 +2,8 @@ import net from 'net';
 
 export type JobType =
   | 'ai.ainubis_analysis'
+  | 'ai.ainubis_monitor'
+  | 'ai.ainubis_scheduled_all'
   | 'notification.dispatch'
   | 'integration.accounting_sync'
   | 'schedule.levy_roll_run'

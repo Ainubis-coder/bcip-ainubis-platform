@@ -31,6 +31,7 @@ import { LeadDetailModal } from './LeadDetailModal';
 import { LeadFormModal } from './LeadFormModal';
 import { LeadStatusModal } from './LeadStatusModal';
 import { LeadConversionWizard } from '../conversion';
+import { AinubisContextualPanel } from '../../ainubis/AinubisContextualPanel';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface LeadsPageProps {
@@ -271,6 +272,13 @@ export function LeadsPage({
         <LeadsSkeleton />
       ) : (
         <div className="space-y-4">
+          {/* Ainubis Lead Contextual Intelligence */}
+          <AinubisContextualPanel
+            activeTenant={activeTenant}
+            user={user}
+            entityType="lead"
+          />
+
           {/* Summary KPI Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-slate-900/60 border border-slate-800/80 rounded-lg p-3">

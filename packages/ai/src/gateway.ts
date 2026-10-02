@@ -1,6 +1,6 @@
-import { IModelProvider, ModelGenerationRequest, ModelGenerationResponse } from './provider';
-import { aiPolicyEngine } from './policies';
-import { aiAuditLogger } from './audit';
+import type { IModelProvider, ModelGenerationRequest, ModelGenerationResponse } from './provider.ts';
+import { aiPolicyEngine } from './policies.ts';
+import { aiAuditLogger } from './audit.ts';
 
 export class AIGateway {
   private providers: Map<string, IModelProvider> = new Map();

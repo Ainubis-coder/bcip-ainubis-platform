@@ -5,6 +5,7 @@
 
 export * from './enums.ts';
 export * from './types.ts';
+export * from './ai-types.ts';
 export * from './events/crm-events.ts';
 export * from './audit/crm-audit.ts';
 
@@ -18,6 +19,8 @@ export * from './repositories/lead.repository.ts';
 export * from './repositories/opportunity.repository.ts';
 export * from './repositories/activity.repository.ts';
 export * from './repositories/task.repository.ts';
+export * from './repositories/ai-observation.repository.ts';
+export * from './repositories/ai-monitoring-execution.repository.ts';
 export * from './repositories/proposal.repository.ts';
 export * from './repositories/contract.repository.ts';
 
@@ -32,3 +35,9 @@ export * from './services/activity.service.ts';
 export * from './services/task.service.ts';
 export * from './services/proposal.service.ts';
 export * from './services/contract.service.ts';
+export * from './services/ainubis-context.builder.ts';
+export * from './services/ainubis-pipeline-hygiene.service.ts';
+export * from './services/ainubis-summary.service.ts';
+export * from './services/ainubis-crm-health.service.ts';
+export * from './services/ainubis-capability.registry.ts';
+export * from './services/ainubis-continuous-monitor.service.ts';

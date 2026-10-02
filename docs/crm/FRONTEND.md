@@ -353,4 +353,187 @@ The conversion test suite is located in `tests/crm-conversion.test.ts` and runs 
 - **Not Found Handling**: Asserts HTTP 404 NOT_FOUND on nonexistent lead IDs.
 - **Status Persistence**: Confirms lead status is permanently `CONVERTED` in subsequent operational queries.
 
+---
+
+## 10. Organisations & Scheme Prospects (Phase 2D-004)
+
+### 10.1 Overview & Component Architecture
+
+The Organisations and Scheme Prospects management views provide enterprise views for commercial client accounts, managing agencies, and body corporate/HOA scheme records connected to the Phase 2C REST API endpoints.
+
+```text
+apps/web/src/components/crm/
+├── organisations/
+│   ├── OrganisationsPage.tsx       # Master page container with KPI summary and modals
+│   ├── OrganisationsTable.tsx      # Responsive table with sortable columns
+│   ├── OrganisationRow.tsx         # High-density row with Zero-Pill formatting
+│   ├── OrganisationCardMobile.tsx  # Compact mobile card view
+│   ├── OrganisationFilters.tsx     # Toolbar with debounced search, type/status filter
+│   ├── OrganisationPagination.tsx  # Slicing indicator and page size selector
+│   ├── OrganisationDetailModal.tsx # Multi-tab inspection modal (Overview, Contacts, Schemes, Opps)
+│   ├── OrganisationFormModal.tsx   # Modal form for creating and editing organisations
+│   ├── OrganisationsSkeleton.tsx   # Shimmer loading state
+│   ├── OrganisationsEmptyState.tsx # Accessible zero-organisation state
+│   ├── OrganisationsErrorState.tsx # Accessible error state with retry
+│   └── index.ts                    # Barrel exports
+│
+└── scheme-prospects/
+    ├── SchemeProspectsPage.tsx       # Master page for sectional title scheme prospects
+    ├── SchemeProspectsTable.tsx      # Table view with unit count & managing agent columns
+    ├── SchemeProspectRow.tsx         # High-density row with Zero-Pill metadata
+    ├── SchemeProspectCardMobile.tsx  # Mobile view for scheme prospects
+    ├── SchemeProspectFilters.tsx     # Debounced search and sorting controls
+    ├── SchemeProspectPagination.tsx  # Page controls
+    ├── SchemeProspectDetailModal.tsx # Detail inspector for units, location, installed software
+    ├── SchemeProspectFormModal.tsx   # Modal form for creating and editing scheme prospects
+    ├── SchemeProspectsSkeleton.tsx   # Shimmer loading state
+    ├── SchemeProspectsEmptyState.tsx # Accessible empty state
+    ├── SchemeProspectsErrorState.tsx # Accessible error state
+    └── index.ts                      # Barrel exports
+```
+
+### 10.2 REST API Endpoints
+
+The views connect directly to the Phase 2C REST API:
+- `GET /api/v1/organisations`: List organisations supporting `page`, `pageSize`, `search`, `status`, `organisationType`, `sortBy`, `sortOrder`.
+- `GET /api/v1/organisations/:id`: Fetch single organisation details.
+- `POST /api/v1/organisations`: Create new organisation with `X-Idempotency-Key`.
+- `PATCH /api/v1/organisations/:id`: Update organisation record.
+- `DELETE /api/v1/organisations/:id`: Soft-delete organisation.
+- `GET /api/v1/organisations/:id/contacts`: Fetch related contacts for an organisation.
+- `GET /api/v1/organisations/:id/scheme-prospects`: Fetch related scheme prospects for an organisation.
+- `GET /api/v1/organisations/:id/opportunities`: Fetch related sales opportunities for an organisation.
+- `GET /api/v1/scheme-prospects`: List scheme prospects supporting `page`, `pageSize`, `search`, `organisationId`, `leadId`, `sortBy`, `sortOrder`.
+- `GET /api/v1/scheme-prospects/:id`: Fetch single scheme prospect record.
+- `POST /api/v1/scheme-prospects`: Create new scheme prospect with `X-Idempotency-Key`.
+- `PATCH /api/v1/scheme-prospects/:id`: Update scheme prospect record.
+- `DELETE /api/v1/scheme-prospects/:id`: Soft-delete scheme prospect.
+
+### 10.3 Cross-Entity Relationship Navigation
+
+- **Organisation → Contacts / Schemes / Opportunities**: The `OrganisationDetailModal` features tabbed sub-resource views with direct navigation links ("View Scheme →", "View in Pipeline →").
+- **Scheme Prospect → Organisation**: The `SchemeProspectDetailModal` displays linked organisation profiles with direct navigation ("View Org →").
+- **Lead Conversion Synergy**: Entities generated via the Lead Conversion Wizard are immediately queryable and navigable in both Organisations and Scheme Prospects views.
+
+### 10.4 Automated Test Coverage
+
+The test suite is located in `tests/crm-organisations.test.ts` and runs under `npm test`:
+- **RBAC Matrix**: Verifies view, create, edit, and delete permissions for `MANAGING_AGENT_ADMIN`, `PORTFOLIO_MANAGER`, and blocks `SCHEME_TRUSTEE` (403).
+- **Organisation Operations**: Creation, single-record query, status update, search filtering, and soft-deletion.
+- **Scheme Prospect Operations**: Creation, unit count updates, list pagination, and soft-deletion.
+- **Sub-Resource Relationships**: Verifies `GET /api/v1/organisations/:id/scheme-prospects`.
+- **Validation**: Asserts HTTP 422 `VALIDATION_ERROR` on bad payloads.
+
+---
+
+## 11. Activities & Tasks (Phase 2D-005)
+
+### 11.1 Overview & Component Architecture
+
+The Activities and Tasks management views provide dedicated CRM workspaces for customer touchpoint logging, interaction auditing, follow-up task tracking, priority management, and completion workflows connected to Phase 2C REST API endpoints.
+
+```text
+apps/web/src/components/crm/
+├── activities/
+│   ├── ActivitiesPage.tsx       # Master activities workspace with KPI strip & modals
+│   ├── ActivitiesTable.tsx      # Responsive desktop table with sortable columns
+│   ├── ActivityRow.tsx          # High-density row with Zero-Pill metadata formatting
+│   ├── ActivityCardMobile.tsx   # Compact mobile card view
+│   ├── ActivityFilters.tsx      # Toolbar with debounced search, activityType dropdown
+│   ├── ActivityPagination.tsx   # Slicing indicator and page size selector
+│   ├── ActivityDetailModal.tsx  # Detail inspector with linked entity navigation
+│   ├── ActivityFormModal.tsx    # Modal form for logging and editing activities
+│   ├── ActivitiesSkeleton.tsx   # Shimmer loading state
+│   ├── ActivitiesEmptyState.tsx # Accessible zero-activity state
+│   ├── ActivitiesErrorState.tsx # Accessible error state with retry
+│   └── index.ts                 # Barrel exports
+│
+└── tasks/
+    ├── TasksPage.tsx            # Master tasks workspace with KPI strip & quick complete
+    ├── TasksTable.tsx           # Table view with check completion column & priority badges
+    ├── TaskRow.tsx              # High-density row with Zero-Pill priority/status tokens
+    ├── TaskCardMobile.tsx       # Mobile view for task action items
+    ├── TaskFilters.tsx          # Debounced search, status filter, priority filter
+    ├── TaskPagination.tsx       # Page controls
+    ├── TaskDetailModal.tsx      # Inspector displaying description, due date, lifecycle actions
+    ├── TaskFormModal.tsx        # Modal form for creating and editing CRM tasks
+    ├── TasksSkeleton.tsx        # Shimmer loading state
+    ├── TasksEmptyState.tsx      # Accessible empty state
+    ├── TasksErrorState.tsx      # Accessible error state
+    └── index.ts                 # Barrel exports
+```
+
+### 11.2 REST API Endpoints
+
+The views connect directly to the Phase 2C REST API:
+- `GET /api/v1/activities`: List activities supporting `page`, `pageSize`, `search`, `activityType`, `leadId`, `opportunityId`, `organisationId`, `sortBy`, `sortOrder`.
+- `GET /api/v1/activities/:id`: Fetch single activity details.
+- `POST /api/v1/activities`: Create new activity log with `X-Idempotency-Key`.
+- `PATCH /api/v1/activities/:id`: Update activity record.
+- `DELETE /api/v1/activities/:id`: Soft-delete activity.
+- `GET /api/v1/tasks`: List tasks supporting `page`, `pageSize`, `search`, `status`, `priority`, `assignedTo`, `leadId`, `opportunityId`, `sortBy`, `sortOrder`.
+- `GET /api/v1/tasks/:id`: Fetch single task record.
+- `POST /api/v1/tasks`: Create new task with `X-Idempotency-Key`.
+- `PATCH /api/v1/tasks/:id`: Update task record.
+- `POST /api/v1/tasks/:id/complete`: Execute lifecycle transition marking task as `COMPLETED`.
+- `DELETE /api/v1/tasks/:id`: Soft-delete task.
+
+### 11.3 Automated Test Coverage
+
+The test suite is located in `tests/crm-activities-tasks.test.ts` and runs under `npm test`:
+- **RBAC Matrix**: Verifies view, create, edit, complete, and delete permissions for `MANAGING_AGENT_ADMIN`, `PORTFOLIO_MANAGER`, and blocks `SCHEME_TRUSTEE` (403).
+- **Activity Operations**: Creation, single-record query, description updates, search filtering, and soft-deletion.
+- **Task Operations**: Creation, priority updates, list pagination, and soft-deletion.
+- **Task Completion Lifecycle**: Verifies `POST /api/v1/tasks/:id/complete` transition to `COMPLETED` state.
+- **Validation**: Asserts HTTP 422 `VALIDATION_ERROR` on bad payloads.
+
+---
+
+## 12. CRM Frontend Consolidation & Final QA (Phase 2D-006)
+
+### 12.1 Consolidated Architecture & Module Map
+
+Phase 2D provides a complete, unified enterprise CRM frontend connecting all commercial sales and managing agency account workflows directly to the Phase 2C REST API:
+
+```text
+BCIP CRM App Shell (AppShell.tsx)
+├── Relationships Group
+│   ├── Pipeline Workspace (#crm / CrmPipelinePage)
+│   ├── Leads Management (#leads / LeadsPage)
+│   ├── Lead Conversion Wizard (#leads / LeadConversionWizard)
+│   ├── Organisations (#organisations / OrganisationsPage)
+│   ├── Scheme Prospects (#scheme_prospects / SchemeProspectsPage)
+│   ├── Activities Workspace (#activities / ActivitiesPage)
+│   └── Tasks Workspace (#tasks / TasksPage)
+```
+
+### 12.2 Cross-Module Relationship Navigation Matrix
+
+- **Lead → Converted Entities:** When a lead is converted via the `LeadConversionWizard`, the atomic REST endpoint generates an Organisation, Contact, Scheme Prospect, Opportunity, and Activity log.
+- **Opportunity → Linked Entities:** `OpportunityDetailModal` links directly to linked Organisation profiles, origin Leads, and Scheme Prospects.
+- **Organisation → Sub-Resources:** `OrganisationDetailModal` features tabbed views querying related Contacts (`GET /organisations/:id/contacts`), Scheme Prospects (`GET /organisations/:id/scheme-prospects`), and Pipeline Opportunities (`GET /organisations/:id/opportunities`).
+- **Scheme Prospect → Organisation:** `SchemeProspectDetailModal` queries and links to the managing agency organisation.
+- **Activities & Tasks → Context Entities:** `ActivityDetailModal` and `TaskDetailModal` provide direct links to linked Leads, Opportunities, and Organisations.
+
+### 12.3 Security, Tenant Isolation & RBAC
+
+- **Authentication:** All client requests pass JWT Bearer tokens signed with user identity (`sub`), user role (`role`), and tenant context (`tenantId`).
+- **Tenant Isolation:** Enforced strictly via `X-Tenant-ID` headers and JWT token claims verified by backend `tenantMiddleware`. No hard-coded tenant IDs exist in production views.
+- **RBAC Matrix:** Centralized in `crm-permissions.ts`. Viewing, creating, editing, converting, completing, and soft-deleting CRM entities are guarded by system permissions (`CRM_LEAD_VIEW`, `CRM_LEAD_CONVERT`, `CRM_TASK_COMPLETE`, etc.).
+
+### 12.4 Verification & Test Execution Summary
+
+```text
+Full test suites: 14/14 test suites PASSED
+Total tests executed: 100% pass rate
+TypeScript compilation: PASS (tsc --noEmit: 0 errors)
+Production build: PASS (npm run build: Vite web app, Express API server, Worker bundles succeeded)
+Linter check: PASS (lint_applet: 0 errors)
+Health Check: PASS (HTTP 200 OK /health)
+Node 22 Runtime: Compatible
+```
+
+
+
+
 

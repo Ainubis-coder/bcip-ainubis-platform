@@ -289,6 +289,16 @@ export const CRMEventType = {
   CONTRACT_SENT: 'crm.contract.sent',
   CONTRACT_SIGNED: 'crm.contract.signed',
   CONTRACT_ACTIVATED: 'crm.contract.activated',
+
+  // Ainubis AI Intelligence Events (Prompt 002E-001)
+  AI_OBSERVATION_CREATED: 'ai.observation.created',
+  AI_OBSERVATION_REVIEWED: 'ai.observation.reviewed',
+  AI_RECOMMENDATION_APPROVED: 'ai.recommendation.approved',
+  AI_RECOMMENDATION_REJECTED: 'ai.recommendation.rejected',
+  AI_RECOMMENDATION_DISMISSED: 'ai.recommendation.dismissed',
+  AI_ACTION_REQUESTED: 'ai.action.requested',
+  AI_ACTION_EXECUTED: 'ai.action.executed',
+  AI_ACTION_FAILED: 'ai.action.failed',
 } as const;
 
 export type CRMEventType = (typeof CRMEventType)[keyof typeof CRMEventType];

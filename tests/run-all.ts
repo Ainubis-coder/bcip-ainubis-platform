@@ -10,6 +10,11 @@ import { runCrmApiTests } from './crm-api.test.ts';
 import { runCrmFrontendTests } from './crm-frontend.test.ts';
 import { runCrmLeadsTests } from './crm-leads.test.ts';
 import { runCrmConversionTests } from './crm-conversion.test.ts';
+import { runCrmOrganisationsTests } from './crm-organisations.test.ts';
+import { runCrmActivitiesTasksTests } from './crm-activities-tasks.test.ts';
+import { runAinubisFoundationTests } from './ainubis-foundation.test.ts';
+import { runAinubisDashboardContextualTests } from './ainubis-dashboard-contextual.test.ts';
+import { runAinubisContinuousMonitoringTests } from './ainubis-continuous-monitoring.test.ts';
 
 async function main() {
   console.log('====================================================');
@@ -29,6 +34,11 @@ async function main() {
     await runCrmFrontendTests();
     await runCrmLeadsTests();
     await runCrmConversionTests();
+    await runCrmOrganisationsTests();
+    await runCrmActivitiesTasksTests();
+    await runAinubisFoundationTests();
+    await runAinubisDashboardContextualTests();
+    await runAinubisContinuousMonitoringTests();
 
     console.log('\n====================================================');
     console.log('✅ ALL TEST SUITES PASSED SUCCESSFULLY');

@@ -28,6 +28,7 @@ import { PipelineErrorState } from './PipelineErrorState';
 import { OpportunityStageTransitionDialog } from './OpportunityStageTransitionDialog';
 import { CreateOpportunityDialog } from './CreateOpportunityDialog';
 import { OpportunityDetailModal } from './OpportunityDetailModal';
+import { AinubisContextualPanel } from '../../ainubis/AinubisContextualPanel';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface CrmPipelinePageProps {
@@ -241,6 +242,13 @@ export function CrmPipelinePage({
         <PipelineSkeleton />
       ) : (
         <div className="space-y-5">
+          {/* Ainubis Contextual Intelligence Panel */}
+          <AinubisContextualPanel
+            activeTenant={activeTenant}
+            user={user}
+            entityType="opportunity"
+          />
+
           {/* Summary KPI Strip */}
           <PipelineSummary
             opportunities={opportunities}
@@ -316,6 +324,9 @@ export function CrmPipelinePage({
         onClose={() => setActiveDetailOpportunity(null)}
         onMoveStage={(opp) => setActiveMoveOpportunity(opp)}
         fetchHistory={fetchOpportunityHistory}
+        onNavigateToOrganisation={(id) => onNavigate?.('organisations')}
+        onNavigateToLead={(id) => onNavigate?.('leads')}
+        onNavigateToSchemeProspect={(id) => onNavigate?.('scheme_prospects')}
       />
 
       {/* Soft Delete Confirmation Modal */}

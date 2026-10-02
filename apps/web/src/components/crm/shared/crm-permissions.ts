@@ -179,3 +179,117 @@ export function canDeleteSchemeProspect(roleString?: string | null): boolean {
   return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_SCHEME_PROSPECT_DELETE);
 }
 
+/**
+ * Checks if user is permitted to view CRM activities
+ */
+export function canViewActivities(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_ACTIVITY_VIEW);
+}
+
+/**
+ * Checks if user is permitted to create CRM activities
+ */
+export function canCreateActivity(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_ACTIVITY_CREATE);
+}
+
+/**
+ * Checks if user is permitted to edit CRM activities
+ */
+export function canEditActivity(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_ACTIVITY_EDIT);
+}
+
+/**
+ * Checks if user is permitted to soft-delete CRM activities
+ */
+export function canDeleteActivity(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_ACTIVITY_DELETE);
+}
+
+/**
+ * Checks if user is permitted to view CRM tasks
+ */
+export function canViewTasks(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_TASK_VIEW);
+}
+
+/**
+ * Checks if user is permitted to create CRM tasks
+ */
+export function canCreateTask(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_TASK_CREATE);
+}
+
+/**
+ * Checks if user is permitted to edit CRM tasks
+ */
+export function canEditTask(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_TASK_EDIT);
+}
+
+/**
+ * Checks if user is permitted to mark CRM tasks as complete
+ */
+export function canCompleteTask(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_TASK_COMPLETE);
+}
+
+/**
+ * Checks if user is permitted to soft-delete CRM tasks
+ */
+export function canDeleteTask(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_TASK_DELETE);
+}
+
+/**
+ * Checks if user is permitted to view Ainubis CRM intelligence records
+ */
+export function canViewAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_VIEW);
+}
+
+/**
+ * Checks if user is permitted to trigger Ainubis intelligence analysis
+ */
+export function canGenerateAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_GENERATE);
+}
+
+/**
+ * Checks if user is permitted to review Ainubis observations
+ */
+export function canReviewAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_REVIEW);
+}
+
+/**
+ * Checks if user is permitted to approve/reject Ainubis recommendations
+ */
+export function canApproveAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_APPROVE);
+}
+
+/**
+ * Checks if user is permitted to execute approved Ainubis actions
+ */
+export function canExecuteAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_EXECUTE);
+}
+
+/**
+ * Checks if user is permitted to dismiss Ainubis observations
+ */
+export function canDismissAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_DISMISS);
+}
+
+/**
+ * Checks if user is permitted to configure or trigger Ainubis continuous monitoring
+ */
+export function canMonitorAI(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_MONITOR);
+}
+
+
+

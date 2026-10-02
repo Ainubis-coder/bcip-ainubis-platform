@@ -25,3 +25,5 @@ export * from './leads';
 export * from './conversion';
 export * from './organisations';
 export * from './scheme-prospects';
+export * from './activities';
+export * from './tasks';

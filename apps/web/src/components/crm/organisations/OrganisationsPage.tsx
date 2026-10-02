@@ -29,6 +29,7 @@ import { OrganisationsEmptyState } from './OrganisationsEmptyState';
 import { OrganisationsErrorState } from './OrganisationsErrorState';
 import { OrganisationDetailModal } from './OrganisationDetailModal';
 import { OrganisationFormModal } from './OrganisationFormModal';
+import { AinubisContextualPanel } from '../../ainubis/AinubisContextualPanel';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface OrganisationsPageProps {
@@ -258,6 +259,13 @@ export function OrganisationsPage({
         <OrganisationsSkeleton />
       ) : (
         <div className="space-y-4">
+          {/* Ainubis Organisation Contextual Intelligence */}
+          <AinubisContextualPanel
+            activeTenant={activeTenant}
+            user={user}
+            entityType="organisation"
+          />
+
           {/* Summary KPI Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-slate-900/60 border border-slate-800/80 rounded-lg p-3">

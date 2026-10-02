@@ -3,6 +3,8 @@ export type ModuleId =
   | 'crm'
   | 'leads'
   | 'organisations'
+  | 'scheme_prospects'
+  | 'activities'
   | 'schemes'
   | 'properties'
   | 'finance'
@@ -53,6 +55,9 @@ export const ENTERPRISE_NAV_GROUPS: NavGroup[] = [
       { id: 'crm', label: 'CRM', iconName: 'crm', description: 'Customer relationship tracking', phase: 'Phase 2' },
       { id: 'leads', label: 'Leads', iconName: 'leads', description: 'Managing agent pipeline & intake', phase: 'Phase 2' },
       { id: 'organisations', label: 'Organisations', iconName: 'organisations', description: 'Managing agents & multi-tier portfolios', phase: 'Phase 2' },
+      { id: 'scheme_prospects', label: 'Scheme Prospects', iconName: 'schemes', description: 'Sectional title & HOA prospect records', phase: 'Phase 2' },
+      { id: 'activities', label: 'Activities', iconName: 'activity', description: 'Customer interactions & call logs', phase: 'Phase 2' },
+      { id: 'tasks', label: 'Tasks', iconName: 'tasks', description: 'CRM action items & follow-up queue', phase: 'Phase 2' },
     ],
   },
   {

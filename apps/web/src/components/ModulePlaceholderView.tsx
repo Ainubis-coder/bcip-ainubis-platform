@@ -52,6 +52,22 @@ const MODULE_SPECS: Record<
     keyCapabilities: ['Organisation profiles', 'Staff role delegation', 'Master billing agreements'],
     dataBoundary: 'Primary tenant boundary (TenantEntity)',
   },
+  scheme_prospects: {
+    title: 'Sectional Scheme Prospects',
+    phase: 'Phase 2',
+    promptTarget: 'Prompt 002D-004 — Organisations & Scheme Prospects',
+    description: 'Sectional title body corporate and HOA prospect register across managing agent portfolios.',
+    keyCapabilities: ['Scheme prospect register', 'Unit sizing', 'Installed property software tracking'],
+    dataBoundary: 'Partitioned by tenant_id',
+  },
+  activities: {
+    title: 'Customer Interactions & Activity Logs',
+    phase: 'Phase 2',
+    promptTarget: 'Prompt 002D-005 — Activities & Tasks',
+    description: 'Log and track customer interactions, phone calls, meetings, demos, and internal notes.',
+    keyCapabilities: ['Interaction logs', 'Cross-entity linking', 'Activity history timelines'],
+    dataBoundary: 'Partitioned by tenant_id',
+  },
   schemes: {
     title: 'Body Corporate Schemes & Strata Management',
     phase: 'Phase 2',

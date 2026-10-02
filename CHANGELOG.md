@@ -4,6 +4,97 @@ All notable changes to the Body Corporate Intelligence Platform (BCIP) and Ainub
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-10-02
+
+### Added
+- **Phase 2E Ainubis Continuous CRM Intelligence & Automated Monitoring (Prompt 002E-003)**:
+  - **Continuous Monitoring Service**: Implemented `AinubisContinuousMonitorService` providing scheduled and event-driven automated surveillance across pipeline hygiene, lead qualification, organisation account health, scheme prospects, and operational tasks.
+  - **Idempotent Deduplication & Reopening**: Added deterministic condition key mapping (`conditionKey`) and auto-resolution logic (`RESOLVED` state) when defective CRM conditions are resolved.
+  - **Failure & Tenant Isolation**: Ensured multi-tenant execution safety with tenant-scoped monitoring and robust failure isolation (failure in Tenant B does not disrupt Tenant A or C).
+  - **Central Capability Registry**: Created `AinubisCapabilityRegistry` cataloguing all intelligence capabilities with metadata.
+  - **Monitoring Execution Repository**: Added `AIMonitoringExecutionRepository` tracking automated runs, duration, and metrics.
+  - **REST API Endpoints (`/api/v1/ai/monitoring/*`)**: Exposed status, capabilities catalogue, execution history, and manual trigger controls with RBAC security gates (`crm:ai:monitor`).
+  - **Automated QA & Security Testing**: Authoritative test suite in `tests/ainubis-continuous-monitoring.test.ts` verifying all requirements.
+
+- **Phase 2E Ainubis CRM Intelligence Foundation & Governance (Prompt 002E-001)**:
+  - **Intelligence Domain Taxonomy**: Exported complete set of types, enums, and structures (`IntelligenceType`, `IntelligenceStatus`, `ConfidenceLevel`, `ApprovalRequirement`, `AICapability`, `EvidenceReference`, and `AIObservationRecord`).
+  - **AIObservationRepository**: Implemented high-performance in-memory repository to store, search, and page AI observations and recommendations, maintaining absolute tenant isolation.
+  - **Context Assembly & Builder**: Created `AinubisContextBuilder` to safely gather tenant-isolated CRM records, activities, tasks, proposals, and metadata, applying sensitive data PII masking (e.g. credit card redaction) via the `@bcip/ai` policy engine.
+  - **First Active Capability - Pipeline Hygiene**: Added `AinubisPipelineHygieneService` (`CRM_PIPELINE_HYGIENE`) to examine sales opportunities and deterministically produce evidence-grounded observations and alerts (e.g., stale deals, overdue follow-up tasks, missing close dates/values).
+  - **REST API Routes (`/api/v1/ai/observations`)**: Implemented REST API layer with search, capability/status filtering, paging, and human-in-the-loop audit gates (`POST /:id/review`, `POST /:id/approve`, `POST /:id/reject`, `POST /:id/dismiss`).
+  - **Real-Time Event Dispatching**: Mounted automated events (`ai.observation.created`, `ai.observation.reviewed`, `ai.recommendation.approved`, `ai.recommendation.rejected`, `ai.recommendation.dismissed`) on the internal CRM event bus.
+  - **Background Worker Job**: Registered `ai.ainubis_analysis` handler in the worker runtime for pipeline hygiene jobs.
+  - **Frontend Intelligence Workspace (`/crm/ainubis` or `#ainubis`)**: Created clean, responsive, and permission-aware workspace:
+    - `AinubisIntelligencePage.tsx`: Primary master view displaying summaries, metric cards, debounced search, filtering, detail inspector modal, and manual analysis trigger.
+    - `AinubisObservationCard.tsx` & `AinubisRecommendationCard.tsx`: Tailored visualization with confidence levels and actionable signoffs.
+    - `AinubisEvidenceList.tsx`: Drill-down expandable evidence trace lineage components.
+    - Skeletons, empty states, and permission checks.
+  - **Automated QA & Security Testing**: Authored robust test suite in `tests/ainubis-foundation.test.ts` with comprehensive assertions confirming correct behavior across all 18 requirements in Section 34 of Prompt 002E-001.
+
+## [0.9.0] - 2026-10-02
+
+### Consolidated & Verified
+- **Phase 2D CRM Frontend Consolidation & Final QA (Prompt 002D-006)**:
+  - Consolidated and verified all 7 core CRM frontend modules:
+    1. Pipeline Kanban Workspace (`/crm` or `#crm`)
+    2. Leads Management Workspace (`/crm/leads` or `#leads`)
+    3. Lead Conversion Wizard (`POST /api/v1/leads/:id/convert`)
+    4. Organisations Management Workspace (`/crm/organisations` or `#organisations`)
+    5. Scheme Prospects Workspace (`/crm/scheme-prospects` or `#scheme_prospects`)
+    6. Activities Management Workspace (`/crm/activities` or `#activities`)
+    7. Tasks & Action Items Workspace (`/crm/tasks` or `#tasks`)
+  - Cross-module relationship navigation: Enabled direct cross-entity links in `OpportunityDetailModal`, `LeadDetailModal`, `OrganisationDetailModal`, `SchemeProspectDetailModal`, `ActivityDetailModal`, and `TaskDetailModal`.
+  - Security & Tenant Isolation Audit: Verified that all API calls pass JWT tokens with user claims and `X-Tenant-ID` headers. Confirmed 0 production hard-coded tenant ID dependencies.
+  - Form Consistency & Accessibility QA: Verified field-level error validation, loading skeletons, accessible zero-item states, keyboard focus trapping, and screen-reader labels across all CRM dialogs and tables.
+  - Responsive Viewport Testing: Verified responsive table rendering and compact card views across 1440px+, 1024px, 768px, 390px, and 360px viewport widths.
+  - Final Quality Gates: Executed 14/14 automated test suites (100% pass rate), verified `tsc --noEmit` (0 errors), `npm run build` (production Vite, Express server, Worker), `lint_applet` (0 errors), and `/health` HTTP 200 OK status.
+
+## [0.8.0] - 2026-10-02
+
+### Added
+- **Phase 2D CRM Frontend — Prompt 002D-005: Activities & Tasks**
+- Created production **Activities Management Workspace (`/crm/activities` or `#activities`)**:
+  - `ActivitiesPage` (`apps/web/src/components/crm/activities/ActivitiesPage.tsx`): Primary workspace with KPI summary strip (Total Interactions, Phone Calls, Meetings, Internal Notes), server-side debounced search (300ms), activity type filter, pagination, and sorting.
+  - `ActivitiesTable`, `ActivityRow`, `ActivityCardMobile`, `ActivityFilters`, `ActivityPagination`: Responsive tabular and mobile card components with Zero-Pill metadata formatting.
+  - `ActivityDetailModal` (`apps/web/src/components/crm/activities/ActivityDetailModal.tsx`): Detail inspector with linked entity navigation (Leads, Opportunities, Organisations).
+  - `ActivityFormModal` (`apps/web/src/components/crm/activities/ActivityFormModal.tsx`): Modal form for logging customer interactions (calls, emails, meetings, demos, notes).
+- Created production **Tasks Management Workspace (`/crm/tasks` or `#tasks`)**:
+  - `TasksPage` (`apps/web/src/components/crm/tasks/TasksPage.tsx`): Primary workspace with KPI summary strip (Open, In Progress, Completed, Overdue), server-side debounced search (300ms), status filter, priority filter, pagination, and quick complete trigger.
+  - `TasksTable`, `TaskRow`, `TaskCardMobile`, `TaskFilters`, `TaskPagination`: Responsive tabular and mobile card components with check completion action, priority badges, and overdue highlighting.
+  - `TaskDetailModal` (`apps/web/src/components/crm/tasks/TaskDetailModal.tsx`): Inspector displaying task description, due dates, assigned users, linked entity links, and lifecycle completion trigger.
+  - `TaskFormModal` (`apps/web/src/components/crm/tasks/TaskFormModal.tsx`): Modal form for creating and editing CRM action items.
+- Extended CRM Shared Query Layer in `apps/web/src/components/crm/shared/`:
+  - `crm-types.ts`: Added `ActivityType`, `ACTIVITY_TYPE_CONFIG`, `Activity`, `CreateActivityDto`, `UpdateActivityDto`, `ActivitiesListResponse`, `TaskStatus`, `TASK_STATUS_CONFIG`, `TaskPriority`, `TASK_PRIORITY_CONFIG`, `CRMTask`, `CreateCRMTaskDto`, `UpdateCRMTaskDto`, `TasksListResponse`.
+  - `crm-permissions.ts`: Added `canViewActivities`, `canCreateActivity`, `canEditActivity`, `canDeleteActivity`, `canViewTasks`, `canCreateTask`, `canEditTask`, `canCompleteTask`, `canDeleteTask`.
+  - `crm-api.ts`: Added `listActivities`, `getActivity`, `createActivity`, `updateActivity`, `deleteActivity`, `listTasks`, `getTask`, `createTask`, `updateTask`, `deleteTask`, `completeTask`.
+- Integrated navigation into `AppShell.tsx` and `types/navigation.ts` under the Relationships group.
+- Authored automated test suite (`tests/crm-activities-tasks.test.ts`) with 9 test cases verifying RBAC permissions, live REST API creation/query/updates, task completion endpoint (`POST /api/v1/tasks/:id/complete`), search, filtering, 403 authorization gates, 422 validation rejections, and soft deletion.
+
+## [0.7.0] - 2026-10-02
+
+### Added
+- **Phase 2D CRM Frontend — Prompt 002D-004: Organisations & Scheme Prospects**
+- Created production **Organisations Management View (`/crm/organisations` or `#organisations`)**:
+  - `OrganisationsPage` (`apps/web/src/components/crm/organisations/OrganisationsPage.tsx`): Primary view with summary KPI strip (Total Organisations, Managing Agents, Body Corporates, Active Clients), server-side debounced search (300ms), filtering by type/status, pagination, and sorting.
+  - `OrganisationsTable` (`apps/web/src/components/crm/organisations/OrganisationsTable.tsx`): Responsive desktop table with sortable column headers.
+  - `OrganisationRow` (`apps/web/src/components/crm/organisations/OrganisationRow.tsx`): High-density row with Zero-Pill metadata formatting.
+  - `OrganisationCardMobile` (`apps/web/src/components/crm/organisations/OrganisationCardMobile.tsx`): Compact card layout for viewports < 768px.
+  - `OrganisationFilters` (`apps/web/src/components/crm/organisations/OrganisationFilters.tsx`): Filter toolbar with debounced search input, type filter, status filter, and sorting.
+  - `OrganisationPagination` (`apps/web/src/components/crm/organisations/OrganisationPagination.tsx`): Range indicator and page size selector (10/20/50 rows).
+  - `OrganisationDetailModal` (`apps/web/src/components/crm/organisations/OrganisationDetailModal.tsx`): Multi-tab inspector displaying Overview, related Contacts, related Scheme Prospects, and related Sales Opportunities.
+  - `OrganisationFormModal` (`apps/web/src/components/crm/organisations/OrganisationFormModal.tsx`): Modal form for creating and editing commercial organisations.
+- Created production **Scheme Prospects Management View (`/crm/scheme-prospects` or `#scheme_prospects`)**:
+  - `SchemeProspectsPage` (`apps/web/src/components/crm/scheme-prospects/SchemeProspectsPage.tsx`): Primary view for sectional-title body corporate and HOA prospect records with summary metrics (Total Schemes, Estimated Units, Agency Portfolios, Self-Managed).
+  - `SchemeProspectsTable`, `SchemeProspectRow`, `SchemeProspectCardMobile`, `SchemeProspectFilters`, `SchemeProspectPagination`: Responsive tabular & card view components.
+  - `SchemeProspectDetailModal` (`apps/web/src/components/crm/scheme-prospects/SchemeProspectDetailModal.tsx`): Detailed inspector displaying unit counts, sectional title scheme codes, location, installed property & accounting software, requirements, pain points, and linked organisation navigation.
+  - `SchemeProspectFormModal` (`apps/web/src/components/crm/scheme-prospects/SchemeProspectFormModal.tsx`): Modal form for creating and editing scheme prospect records.
+- Extended CRM Query Layer in `apps/web/src/components/crm/shared/`:
+  - `crm-types.ts`: Added `OrganisationStatus`, `ORGANISATION_STATUS_CONFIG`, `CRMAddress`, `Organisation`, `CreateOrganisationDto`, `UpdateOrganisationDto`, `OrganisationsListResponse`, `Contact`, `SchemeProspect`, `CreateSchemeProspectDto`, `UpdateSchemeProspectDto`, `SchemeProspectsListResponse`.
+  - `crm-permissions.ts`: Added `canViewOrganisations`, `canCreateOrganisation`, `canEditOrganisation`, `canDeleteOrganisation`, `canViewSchemeProspects`, `canCreateSchemeProspect`, `canEditSchemeProspect`, `canDeleteSchemeProspect`.
+  - `crm-api.ts`: Added `listOrganisations`, `getOrganisation`, `createOrganisation`, `updateOrganisation`, `deleteOrganisation`, `getOrganisationContacts`, `getOrganisationOpportunities`, `getOrganisationSchemeProspects`, `listSchemeProspects`, `getSchemeProspect`, `createSchemeProspect`, `updateSchemeProspect`, `deleteSchemeProspect`.
+- Integrated navigation into `AppShell.tsx` and `types/navigation.ts` under the Relationships group.
+- Authored automated test suite (`tests/crm-organisations.test.ts`) with 8 test cases verifying RBAC permissions, live REST API creation/query/updates, sub-resource relationships, search, filtering, 403 authorization gates, 422 validation rejections, and soft deletion.
+
 ## [0.6.0] - 2026-10-01
 
 ### Added

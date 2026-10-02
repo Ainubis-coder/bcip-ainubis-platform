@@ -10,7 +10,8 @@ import { ModulePlaceholderView } from './components/ModulePlaceholderView';
 import { AinubisIntelligencePanel } from './components/AinubisIntelligencePanel';
 import { ApiStatusModal } from './components/ApiStatusModal';
 import { DesignSystemShowcase } from './components/DesignSystemShowcase';
-import { CrmPipelinePage, LeadsPage } from './components/crm';
+import { CrmPipelinePage, LeadsPage, OrganisationsPage, SchemeProspectsPage, ActivitiesPage, TasksPage } from './components/crm';
+import { AinubisIntelligencePage } from './components/ainubis';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { NotificationPanel } from './components/NotificationPanel';
 import { TenantContextModal } from './components/TenantContextModal';
@@ -21,9 +22,13 @@ export function AppShell() {
   // Navigation & Route State
   const [currentModule, setCurrentModule] = useState<ModuleId>(() => {
     if (typeof window !== 'undefined' && window.location.hash) {
-      const hash = window.location.hash.replace('#', '') as ModuleId;
+      let hash = window.location.hash.replace('#', '') as ModuleId;
+      if (hash === ('crm/organisations' as any)) hash = 'organisations';
+      if (hash === ('crm/scheme-prospects' as any)) hash = 'scheme_prospects';
+      if (hash === ('crm/activities' as any)) hash = 'activities';
+      if (hash === ('crm/tasks' as any)) hash = 'tasks';
       const validModules: ModuleId[] = [
-        'dashboard', 'crm', 'leads', 'organisations', 'schemes', 'properties',
+        'dashboard', 'crm', 'leads', 'organisations', 'scheme_prospects', 'activities', 'schemes', 'properties',
         'finance', 'invoices', 'payments', 'maintenance', 'contractors',
         'governance', 'documents', 'integrations', 'analytics', 'ainubis',
         'alerts', 'recommendations', 'tasks', 'notifications', 'administration', 'design_system'
@@ -193,9 +198,48 @@ export function AppShell() {
                 />
               )}
 
+              {currentModule === 'organisations' && (
+                <OrganisationsPage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
+              {currentModule === 'scheme_prospects' && (
+                <SchemeProspectsPage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
+              {currentModule === 'activities' && (
+                <ActivitiesPage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
+              {currentModule === 'tasks' && (
+                <TasksPage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
+                />
+              )}
+
               {currentModule === 'ainubis' && (
-                <AinubisIntelligencePanel
-                  onReturnToDashboard={() => navigateTo('dashboard')}
+                <AinubisIntelligencePage
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                  onOpenStatusModal={() => setIsStatusModalOpen(true)}
                 />
               )}
 
@@ -206,6 +250,10 @@ export function AppShell() {
               {currentModule !== 'dashboard' &&
                 currentModule !== 'crm' &&
                 currentModule !== 'leads' &&
+                currentModule !== 'organisations' &&
+                currentModule !== 'scheme_prospects' &&
+                currentModule !== 'activities' &&
+                currentModule !== 'tasks' &&
                 currentModule !== 'ainubis' &&
                 currentModule !== 'design_system' && (
                   <ModulePlaceholderView
