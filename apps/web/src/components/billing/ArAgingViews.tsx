@@ -454,7 +454,7 @@ export function CustomerStatementsView({
           size="sm"
           onClick={loadStatement}
           disabled={isLoading || !selectedCustomerId}
-          icon="file-text"
+          leftIcon={<Icon name="file-text" size="sm" />}
         >
           {isLoading ? 'Generating...' : 'Refresh Statement'}
         </Button>
@@ -718,7 +718,7 @@ export function CollectionPriorityView({
             size="sm"
             onClick={fetchPriorities}
             disabled={isLoading}
-            icon="refresh-cw"
+            leftIcon={<Icon name="refresh" size="sm" />}
           >
             {isLoading ? 'Ranking...' : 'Refresh Queue'}
           </Button>
@@ -789,7 +789,7 @@ export function CollectionPriorityView({
               <Button
                 variant="secondary"
                 size="sm"
-                icon="file-text"
+                leftIcon={<Icon name="file-text" size="sm" />}
                 onClick={() => onOpenStatement(item.customerId)}
               >
                 View Statement
@@ -797,7 +797,7 @@ export function CollectionPriorityView({
               <Button
                 variant="primary"
                 size="sm"
-                icon="dollar-sign"
+                leftIcon={<span aria-hidden="true" className="font-bold text-xs">$</span>}
                 onClick={() => onOpenRecordPayment(item.customerId)}
               >
                 Record Payment
@@ -849,7 +849,7 @@ export function ReconciliationView({ api }: { api: any }) {
       <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 flex flex-wrap justify-between items-center gap-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-            <Icon name="shield-check" size="sm" className="text-sky-400" />
+            <Icon name="shield" size="sm" className="text-sky-400" />
             Commercial Ledger Financial Reconciliation
           </h3>
           <p className="text-xs text-slate-400 mt-1">
@@ -869,7 +869,7 @@ export function ReconciliationView({ api }: { api: any }) {
             size="sm"
             onClick={fetchReconciliation}
             disabled={isLoading}
-            icon="refresh-cw"
+            leftIcon={<Icon name="refresh" size="sm" />}
           >
             {isLoading ? 'Auditing...' : 'Run Audit'}
           </Button>
@@ -894,7 +894,7 @@ export function ReconciliationView({ api }: { api: any }) {
           >
             <div className="flex items-center gap-3">
               <Icon
-                name={report.isReconciled ? 'check-circle' : 'alert-octagon'}
+                name={report.isReconciled ? 'check-circle' : 'alert-triangle'}
                 size="md"
                 className={report.isReconciled ? 'text-emerald-400' : 'text-rose-400'}
               />
