@@ -3,7 +3,7 @@
  * Enforces tenant scope, soft delete isolation, and deterministic entity tracking.
  */
 
-import { BaseBillingEntity } from '../types.ts';
+import type { BaseBillingEntity } from '../types.ts';
 
 export interface BillingQueryOptions {
   includeDeleted?: boolean;

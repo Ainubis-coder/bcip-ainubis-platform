@@ -19,6 +19,12 @@ export class InvoiceRepository extends BaseBillingRepository<Invoice> {
     const all = await this.findAll(tenantId, { includeDeleted: true });
     return all.find((i) => i.invoiceNumber === invoiceNumber) || null;
   }
+
+  public async findByCustomerId(tenantId: string, customerId: string): Promise<Invoice[]> {
+    const all = await this.findAll(tenantId);
+    return all.filter((i) => i.billingCustomerId === customerId);
+  }
 }
+
 
 export const invoiceRepository = new InvoiceRepository();

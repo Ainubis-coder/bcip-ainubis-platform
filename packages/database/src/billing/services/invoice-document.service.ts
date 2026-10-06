@@ -8,7 +8,7 @@ import { invoiceLineRepository } from '../repositories/invoice-line.repository.t
 import { billingCustomerRepository } from '../repositories/billing-customer.repository.ts';
 import { invoiceDocumentRepository } from '../repositories/invoice-document.repository.ts';
 import { billingAuditRepository } from '../repositories/billing-audit.repository.ts';
-import { InvoiceDocument } from '../types.ts';
+import type { InvoiceDocument } from '../types.ts';
 import { InvoiceStatus } from '../enums.ts';
 
 export class InvoiceDocumentService {

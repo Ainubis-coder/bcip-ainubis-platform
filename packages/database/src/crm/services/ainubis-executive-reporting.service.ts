@@ -241,14 +241,16 @@ export class AinubisExecutiveReportingService {
     const saved = await executiveReportRepository.create(reportRecord);
 
     // Write audit event (Prompt 23)
-    await crmAuditService.record(tenantId, 'system', {
-      action: 'analysis_completed',
-      entityType: 'workflow',
-      entityId: reportId,
-      status: 'SUCCESS',
-      correlationId,
-      metadata: { reportType, version: nextVersion, confidence },
-    });
+    await crmAuditService.record(
+      tenantId,
+      'report',
+      reportId,
+      'analysis_completed',
+      'system',
+      undefined,
+      undefined,
+      { reportType, version: nextVersion, confidence, correlationId }
+    );
 
     return saved;
   }
@@ -297,14 +299,16 @@ export class AinubisExecutiveReportingService {
     });
 
     // Audit log
-    await crmAuditService.record(tenantId, userId, {
-      action: 'operator_reviewed',
-      entityType: 'workflow',
-      entityId: reportId,
-      status: 'SUCCESS',
-      correlationId: report.correlationId,
-      metadata: { reportType: report.reportType, version: report.version, state: 'APPROVED' },
-    });
+    await crmAuditService.record(
+      tenantId,
+      'report',
+      reportId,
+      'operator_reviewed',
+      userId,
+      undefined,
+      undefined,
+      { reportType: report.reportType, version: report.version, state: 'APPROVED', correlationId: report.correlationId }
+    );
 
     return updated!;
   }
@@ -347,14 +351,16 @@ export class AinubisExecutiveReportingService {
     });
 
     // Audit log
-    await crmAuditService.record(tenantId, userId, {
-      action: 'operator_reviewed',
-      entityType: 'workflow',
-      entityId: reportId,
-      status: 'SUCCESS',
-      correlationId: report.correlationId,
-      metadata: { reportType: report.reportType, version: report.version, state: 'REJECTED' },
-    });
+    await crmAuditService.record(
+      tenantId,
+      'report',
+      reportId,
+      'operator_reviewed',
+      userId,
+      undefined,
+      undefined,
+      { reportType: report.reportType, version: report.version, state: 'REJECTED', correlationId: report.correlationId }
+    );
 
     return updated!;
   }
@@ -385,14 +391,16 @@ export class AinubisExecutiveReportingService {
     });
 
     // Audit log
-    await crmAuditService.record(tenantId, userId, {
-      action: 'operator_reviewed',
-      entityType: 'workflow',
-      entityId: reportId,
-      status: 'SUCCESS',
-      correlationId: report.correlationId,
-      metadata: { reportType: report.reportType, version: report.version, state: 'PUBLISHED' },
-    });
+    await crmAuditService.record(
+      tenantId,
+      'report',
+      reportId,
+      'operator_reviewed',
+      userId,
+      undefined,
+      undefined,
+      { reportType: report.reportType, version: report.version, state: 'PUBLISHED', correlationId: report.correlationId }
+    );
 
     return updated!;
   }
@@ -416,14 +424,16 @@ export class AinubisExecutiveReportingService {
     });
 
     // Audit log
-    await crmAuditService.record(tenantId, userId, {
-      action: 'operator_reviewed',
-      entityType: 'workflow',
-      entityId: reportId,
-      status: 'SUCCESS',
-      correlationId: report.correlationId,
-      metadata: { reportType: report.reportType, version: report.version, state: 'ARCHIVED' },
-    });
+    await crmAuditService.record(
+      tenantId,
+      'report',
+      reportId,
+      'operator_reviewed',
+      userId,
+      undefined,
+      undefined,
+      { reportType: report.reportType, version: report.version, state: 'ARCHIVED', correlationId: report.correlationId }
+    );
 
     return updated!;
   }

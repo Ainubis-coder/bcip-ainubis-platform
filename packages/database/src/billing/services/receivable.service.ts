@@ -9,7 +9,7 @@ import { receivableRepository } from '../repositories/receivable.repository.ts';
 import { paymentRepository } from '../repositories/payment.repository.ts';
 import { paymentAllocationRepository } from '../repositories/payment-allocation.repository.ts';
 import { billingAuditRepository } from '../repositories/billing-audit.repository.ts';
-import { Receivable, PaymentRecord, PaymentAllocation, ReceivableStatus, PaymentStatus, PaymentMethod } from '../types.ts';
+import type { Receivable, PaymentRecord, PaymentAllocation, ReceivableStatus, PaymentStatus, PaymentMethod } from '../types.ts';
 import { InvoiceStatus } from '../enums.ts';
 
 export class ReceivableService {

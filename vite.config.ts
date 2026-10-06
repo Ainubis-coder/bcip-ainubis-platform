@@ -6,7 +6,8 @@ import { defineConfig } from 'vite';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  const isBuild = command === 'build';
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
@@ -20,12 +21,15 @@ export default defineConfig(() => {
         '@bcip/workflows': path.resolve(rootDir, 'packages/workflows/src/index.ts'),
       },
     },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+    build: {
+      outDir: 'dist',
     },
+    server: isBuild
+      ? undefined
+      : {
+          // Disable HMR WebSockets in Cloud Run runtime unless explicitly requested
+          hmr: process.env.ENABLE_HMR === 'true',
+          watch: process.env.DISABLE_HMR === 'true' ? null : {},
+        },
   };
 });

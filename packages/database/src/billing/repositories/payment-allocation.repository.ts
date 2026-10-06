@@ -4,7 +4,7 @@
  */
 
 import { BaseBillingRepository } from './base.repository.ts';
-import { PaymentAllocation } from '../types.ts';
+import type { PaymentAllocation } from '../types.ts';
 
 export class PaymentAllocationRepository extends BaseBillingRepository<PaymentAllocation> {
   constructor() {

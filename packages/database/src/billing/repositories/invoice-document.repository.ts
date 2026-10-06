@@ -4,7 +4,7 @@
  */
 
 import { BaseBillingRepository } from './base.repository.ts';
-import { InvoiceDocument } from '../types.ts';
+import type { InvoiceDocument } from '../types.ts';
 
 export class InvoiceDocumentRepository extends BaseBillingRepository<InvoiceDocument> {
   constructor() {

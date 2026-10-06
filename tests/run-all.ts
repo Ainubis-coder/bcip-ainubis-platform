@@ -27,6 +27,8 @@ import { runBillingWorkspaceTests } from './billing-workspace.test.ts';
 import { runInvoiceDocumentsTests } from './invoice-documents.test.ts';
 import { runInvoiceDeliveriesTests } from './invoice-deliveries.test.ts';
 import { runReceivablesTests } from './receivables.test.ts';
+import { runArAgingTests } from './ar-aging.test.ts';
+
 
 async function main() {
   console.log('====================================================');
@@ -63,6 +65,8 @@ async function main() {
     await runInvoiceDocumentsTests();
     await runInvoiceDeliveriesTests();
     await runReceivablesTests();
+    await runArAgingTests();
+
 
     console.log('\n====================================================');
     console.log('✅ ALL TEST SUITES PASSED SUCCESSFULLY');

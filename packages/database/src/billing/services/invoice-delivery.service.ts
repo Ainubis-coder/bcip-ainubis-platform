@@ -10,7 +10,7 @@ import { invoiceDeliveryRepository } from '../repositories/invoice-delivery.repo
 import { invoiceDeliveryAttemptRepository } from '../repositories/invoice-delivery-attempt.repository.ts';
 import { invoiceDeliveryTemplateRepository } from '../repositories/invoice-delivery-template.repository.ts';
 import { billingAuditRepository } from '../repositories/billing-audit.repository.ts';
-import { InvoiceDelivery, InvoiceDeliveryAttempt, InvoiceDeliveryStatus, InvoiceDeliveryTemplate } from '../types.ts';
+import type { InvoiceDelivery, InvoiceDeliveryAttempt, InvoiceDeliveryStatus, InvoiceDeliveryTemplate } from '../types.ts';
 import { InvoiceStatus } from '../enums.ts';
 
 // Recipient destination validation regex

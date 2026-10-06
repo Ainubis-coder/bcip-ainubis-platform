@@ -1729,7 +1729,86 @@ export class CrmApiClient {
       body: JSON.stringify({ reason }),
     });
   }
+
+  // ============================================================================
+  // AR AGING, STATEMENTS & RECONCILIATION (PHASE 3 — PROMPT 003-006)
+  // ============================================================================
+  public async getReceivablesAging(filters?: { customerId?: string; asOfDate?: string }): Promise<any> {
+    let url = '/billing/receivables/aging';
+    const params = new URLSearchParams();
+    if (filters?.customerId) params.append('customerId', filters.customerId);
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return res?.data || res;
+  }
+
+  public async getOverdueReceivables(filters?: { customerId?: string; asOfDate?: string }): Promise<any[]> {
+    let url = '/billing/receivables/overdue';
+    const params = new URLSearchParams();
+    if (filters?.customerId) params.append('customerId', filters.customerId);
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return Array.isArray(res) ? res : res?.data || [];
+  }
+
+  public async getCustomerStatement(customerId: string, filters?: { startDate?: string; endDate?: string; asOfDate?: string }): Promise<any> {
+    let url = `/billing/customers/${encodeURIComponent(customerId)}/statement`;
+    const params = new URLSearchParams();
+    if (filters?.startDate) params.append('startDate', filters.startDate);
+    if (filters?.endDate) params.append('endDate', filters.endDate);
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return res?.data || res;
+  }
+
+  public async getCollectionPriority(filters?: { asOfDate?: string }): Promise<any[]> {
+    let url = '/billing/receivables/collection-priority';
+    const params = new URLSearchParams();
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return Array.isArray(res) ? res : res?.data || [];
+  }
+
+  public async getReceivablesSummary(filters?: { asOfDate?: string }): Promise<any> {
+    let url = '/billing/receivables/summary';
+    const params = new URLSearchParams();
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return res?.data || res;
+  }
+
+  public async getCustomerBalance(customerId: string, filters?: { asOfDate?: string }): Promise<any> {
+    let url = `/billing/customers/${encodeURIComponent(customerId)}/balance`;
+    const params = new URLSearchParams();
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return res?.data || res;
+  }
+
+  public async getReconciliationReport(filters?: { asOfDate?: string }): Promise<any> {
+
+    let url = '/billing/reconciliation';
+    const params = new URLSearchParams();
+    if (filters?.asOfDate) params.append('asOfDate', filters.asOfDate);
+    const query = params.toString();
+    if (query) url += `?${query}`;
+    const res = await this.request<any>(url);
+    return res?.data || res;
+  }
 }
+
 
 /**
  * Factory to instantiate client for active context

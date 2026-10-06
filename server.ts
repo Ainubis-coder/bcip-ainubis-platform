@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'node:fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
@@ -36,22 +37,40 @@ async function bootstrap() {
   // Versioned API endpoints (GET /api/v1/status, etc.)
   app.use('/api', apiV1Router);
 
-  // Frontend Dev Middleware or Static Serving
-  const isProd = process.env.NODE_ENV === 'production';
-  if (!isProd) {
+  // Frontend Serving Strategy: Production Static Assets vs Vite Dev Middleware
+  // In Cloud Run runtime or production environments, we serve pre-compiled assets from dist/.
+  // Vite dev server is only used when explicitly requested or when dist/ has not been compiled.
+  const distIndexPath = path.resolve(__dirname, 'dist', 'index.html');
+  const hasDist = fs.existsSync(distIndexPath);
+  const isExplicitDev = process.env.VITE_DEV_MODE === 'true';
+  const isProd =
+    process.env.NODE_ENV === 'production' ||
+    process.env.APP_ENV === 'production' ||
+    process.env.npm_lifecycle_event === 'start' ||
+    (!isExplicitDev && hasDist);
+
+  if (isProd) {
+    logger.info('[BCIP] Serving compiled production frontend assets from dist/', {
+      event: 'production_frontend_serving',
+      data: { distPath: path.resolve(__dirname, 'dist') },
+    });
+    app.use(express.static(path.resolve(__dirname, 'dist')));
+    app.get('*', (_req, res) => {
+      res.sendFile(distIndexPath);
+    });
+  } else {
+    logger.info('[BCIP] Mounting Vite development middleware', {
+      event: 'vite_dev_middleware_mounted',
+      data: { hmr: false },
+    });
     const vite = await createViteServer({
       server: {
         middlewareMode: true,
-        hmr: process.env.DISABLE_HMR !== 'true',
+        hmr: false,
       },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
-    app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-    });
   }
 
   // Global Error Handler Middleware

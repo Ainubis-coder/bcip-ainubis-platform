@@ -6,6 +6,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button, Icon, Modal } from '@bcip/ui';
 import { getCrmApiClient } from '../crm/shared/crm-api.ts';
+import {
+  ArAgingDashboardView,
+  CustomerStatementsView,
+  CollectionPriorityView,
+  ReconciliationView,
+} from './ArAgingViews.tsx';
 import type { TenantContext, UserAccount } from '../../types/tenant';
 import type { ModuleId } from '../../types/navigation';
 
@@ -16,9 +22,11 @@ interface CommercialBillingWorkspaceProps {
 }
 
 export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: CommercialBillingWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'customers' | 'profiles' | 'invoices' | 'taxes' | 'receivables'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'customers' | 'profiles' | 'invoices' | 'receivables' | 'aging' | 'statements' | 'collections' | 'reconciliation' | 'taxes'>('dashboard');
+  const [statementCustomerId, setStatementCustomerId] = useState<string>('');
 
   const [customers, setCustomers] = useState<any[]>([]);
+
   const [profiles, setProfiles] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
@@ -762,21 +770,22 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
       )}
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex border-b border-slate-800 gap-6">
-        {(['dashboard', 'customers', 'profiles', 'invoices', 'receivables', 'taxes'] as const).map((tab) => (
+      <div className="flex border-b border-slate-800 gap-6 overflow-x-auto pb-1">
+        {(['dashboard', 'customers', 'profiles', 'invoices', 'receivables', 'aging', 'statements', 'collections', 'reconciliation', 'taxes'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative capitalize ${
+            className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative capitalize whitespace-nowrap ${
               activeTab === tab
                 ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            {tab}
+            {tab === 'aging' ? 'AR Aging' : tab === 'collections' ? 'Collection Priority' : tab}
           </button>
         ))}
       </div>
+
 
       {/* TAB 1: DASHBOARD */}
       {activeTab === 'dashboard' && (
@@ -1676,8 +1685,49 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
         </div>
       )}
 
+      {/* TAB: AR AGING INTELLIGENCE */}
+      {activeTab === 'aging' && (
+        <ArAgingDashboardView
+          api={api}
+          customers={customers}
+          onOpenStatement={(customerId) => {
+            setStatementCustomerId(customerId);
+            setActiveTab('statements');
+          }}
+        />
+      )}
+
+      {/* TAB: CUSTOMER STATEMENTS */}
+      {activeTab === 'statements' && (
+        <CustomerStatementsView
+          api={api}
+          customers={customers}
+          initialCustomerId={statementCustomerId}
+        />
+      )}
+
+      {/* TAB: COLLECTION PRIORITY */}
+      {activeTab === 'collections' && (
+        <CollectionPriorityView
+          api={api}
+          onOpenStatement={(customerId) => {
+            setStatementCustomerId(customerId);
+            setActiveTab('statements');
+          }}
+          onOpenRecordPayment={(customerId) => {
+            if (customerId) setNewPmtCustId(customerId);
+            setIsRecordPaymentModalOpen(true);
+          }}
+        />
+      )}
+
+      {/* TAB: COMMERCIAL LEDGER RECONCILIATION */}
+      {activeTab === 'reconciliation' && (
+        <ReconciliationView api={api} />
+      )}
 
       {/* MODALS */}
+
       {/* Record Payment Modal */}
       <Modal
         isOpen={isRecordPaymentModalOpen}

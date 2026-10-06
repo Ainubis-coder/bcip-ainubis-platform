@@ -159,15 +159,15 @@ export async function runAinubisExecutiveReportingTests() {
   console.log('Test 1: Verifying Reporting Period Validation...');
 
   const badPeriod1 = {
-    reportType: 'EXECUTIVE_PORTFOLIO_BRIEF',
-    reportingPeriod: 'WEEKLY',
+    reportType: 'EXECUTIVE_PORTFOLIO_BRIEF' as const,
+    reportingPeriod: 'WEEKLY' as const,
     periodStart: '2026-10-05',
     periodEnd: '2026-10-01', // prior to start
   };
 
   const badPeriod2 = {
-    reportType: 'EXECUTIVE_PORTFOLIO_BRIEF',
-    reportingPeriod: 'WEEKLY',
+    reportType: 'EXECUTIVE_PORTFOLIO_BRIEF' as const,
+    reportingPeriod: 'WEEKLY' as const,
     periodStart: '2026-10-01',
     periodEnd: '2030-10-01', // future
   };
@@ -225,7 +225,8 @@ export async function runAinubisExecutiveReportingTests() {
     tenantId: tenantA,
     metricName: 'pipeline_velocity',
     direction: 'UP',
-    calculatedAt: new Date().toISOString(),
+    period: '7 DAYS',
+    history: [{ date: new Date().toISOString(), value: 10 }],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });

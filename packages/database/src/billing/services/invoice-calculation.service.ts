@@ -25,7 +25,7 @@ export class InvoiceCalculationService {
    * Calculates totals for a set of line items and returns updated lines with calculated fields.
    */
   public static calculateInvoiceTotals(
-    lines: Omit<InvoiceLine, 'lineSubtotal' | 'lineTotal' | 'taxAmount'>[],
+    lines: Array<Omit<InvoiceLine, 'lineSubtotal' | 'lineTotal' | 'taxAmount' | 'createdAt' | 'updatedAt'> & { createdAt?: string; updatedAt?: string }>,
     globalTaxRate: number = 0
   ): CalculationResult {
     let subtotal = 0;

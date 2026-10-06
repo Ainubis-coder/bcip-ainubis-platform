@@ -212,6 +212,14 @@ const MODULE_SPECS: Record<
     keyCapabilities: ['Tokens review', 'Component library', 'Accessibility verification'],
     dataBoundary: 'UI system showcase for platform developers and auditors',
   },
+  billing: {
+    title: 'Commercial Billing & Invoicing Workspace',
+    phase: 'Phase 3',
+    promptTarget: 'Prompt 003-002 — Commercial Billing Workspace',
+    description: 'Commercial customers, billing profiles, tax configuration, and lifecycle-managed invoices.',
+    keyCapabilities: ['Customer management', 'Billing profiles', 'Deterministic calculation', 'Receivables ledger'],
+    dataBoundary: 'Tenant partitioned with strict isolation',
+  },
 };
 
 export function ModulePlaceholderView({

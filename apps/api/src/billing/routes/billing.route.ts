@@ -9,7 +9,9 @@ import { BillingController } from '../controllers/billing.controller.ts';
 import { InvoiceDocumentsController } from '../controllers/invoice-documents.controller.ts';
 import { InvoiceDeliveriesController } from '../controllers/invoice-deliveries.controller.ts';
 import { ReceivablesController, PaymentsController, PaymentAllocationsController } from '../controllers/receivables.controller.ts';
+import { ArAgingController } from '../controllers/ar-aging.controller.ts';
 import { authMiddleware } from '../../crm/middleware/auth.middleware.ts';
+
 import { requirePermission } from '../../crm/middleware/rbac.middleware.ts';
 
 export const billingRouter = express.Router();
@@ -209,6 +211,64 @@ billingRouter.get(
 );
 
 // ============================================================================
+// AR AGING & OVERDUE INTELLIGENCE (PHASE 3 — PROMPT 003-006)
+// ============================================================================
+billingRouter.get(
+  '/receivables/aging',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
+  ArAgingController.getAging
+);
+
+billingRouter.get(
+  '/receivables/overdue',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
+  ArAgingController.getOverdue
+);
+
+billingRouter.get(
+  '/receivables/summary',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
+  ArAgingController.getSummary
+);
+
+billingRouter.get(
+  '/receivables/collection-priority',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
+  ArAgingController.getCollectionPriority
+);
+
+// ============================================================================
+// CUSTOMER STATEMENTS & BALANCES (PHASE 3 — PROMPT 003-006)
+// ============================================================================
+billingRouter.get(
+  '/customers/:customerId/balance',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_CUSTOMER_VIEW),
+  ArAgingController.getCustomerBalance
+);
+
+billingRouter.get(
+  '/customers/:id/statement',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_CUSTOMER_VIEW),
+  ArAgingController.getCustomerStatement
+);
+
+
+billingRouter.get(
+  '/statements/:customerId',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_CUSTOMER_VIEW),
+  ArAgingController.getCustomerStatement
+);
+
+// ============================================================================
+// COMMERCIAL LEDGER RECONCILIATION (PHASE 3 — PROMPT 003-006)
+// ============================================================================
+billingRouter.get(
+  '/reconciliation',
+  requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
+  ArAgingController.getReconciliation
+);
+
+// ============================================================================
 // RECEIVABLES
 // ============================================================================
 billingRouter.get(
@@ -216,6 +276,7 @@ billingRouter.get(
   requirePermission(SYSTEM_PERMISSIONS.BILLING_RECEIVABLE_VIEW),
   ReceivablesController.listReceivables
 );
+
 
 billingRouter.get(
   '/receivables/:id',

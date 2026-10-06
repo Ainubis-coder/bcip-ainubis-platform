@@ -25,3 +25,5 @@ export * from './services/invoice-lifecycle.service.ts';
 export * from './services/invoice-document.service.ts';
 export * from './services/invoice-delivery.service.ts';
 export * from './services/receivable.service.ts';
+export * from './services/ar-aging.service.ts';
+

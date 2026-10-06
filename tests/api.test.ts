@@ -64,7 +64,7 @@ export async function runApiTests(): Promise<void> {
         assert.strictEqual(data.service, 'bcip-api', 'Service should match bcip-api');
         assert.ok(data.timestamp, 'Timestamp should be returned');
         assert.ok(typeof data.uptimeSeconds === 'number', 'Uptime should be numeric');
-        assert.ok(headers['x-request-id'], 'X-Request-Id header must be set');
+        assert.ok(headers['x-correlation-id'], 'X-Correlation-Id header must be set');
         console.log('  ✓ GET /health responded with 200 and healthy payload');
         resolve();
       } catch (e) {
@@ -82,7 +82,7 @@ export async function runApiTests(): Promise<void> {
       url: '/api/v1/status',
       headers: {
         host: 'localhost:3000',
-        'x-request-id': 'custom_test_req_123',
+        'x-correlation-id': 'custom_test_req_123',
       },
       originalUrl: '/api/v1/status',
       pipe: () => {},
@@ -97,7 +97,7 @@ export async function runApiTests(): Promise<void> {
         assert.ok(data.data.applicationName.includes('BCIP'), 'Must contain platform name');
         assert.strictEqual(data.data.apiVersion, 'v1', 'API version must be v1');
         assert.strictEqual(data.data.serviceStatus, 'operational', 'Status must be operational');
-        assert.strictEqual(headers['x-request-id'], 'custom_test_req_123', 'Should preserve correlation ID');
+        assert.strictEqual(headers['x-correlation-id'], 'custom_test_req_123', 'Should preserve correlation ID');
         assert.ok(data.data.capabilities.multiTenantPartitioning, 'Capabilities must be reported');
         console.log('  ✓ GET /api/v1/status responded with 200 and status metadata');
         resolve();
@@ -124,7 +124,7 @@ export async function runApiTests(): Promise<void> {
     const res = createMockResponse((code, headers) => {
       try {
         assert.strictEqual(code, 200);
-        const reqId = headers['x-request-id'];
+        const reqId = headers['x-correlation-id'];
         assert.ok(reqId && reqId.startsWith('bcip_req_'), 'Auto-generated request ID should have prefix bcip_req_');
         console.log('  ✓ API generated request ID when none provided by client');
         resolve();
@@ -155,7 +155,7 @@ export async function runApiTests(): Promise<void> {
         assert.ok(data.error, 'Error object must be present');
         assert.strictEqual(data.error.code, 'NOT_FOUND', 'Error code should be NOT_FOUND');
         assert.ok(data.error.message, 'Human readable message should be present');
-        assert.ok(data.error.requestId, 'Request ID should be present in error object');
+        assert.ok(data.error.correlationId, 'Correlation ID should be present in error object');
         assert.strictEqual(data.error.stack, undefined, 'Stack trace must NOT be exposed in response');
         console.log('  ✓ API returned structured error envelope without leaking stack traces');
         resolve();

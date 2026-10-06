@@ -4,6 +4,29 @@ All notable changes to the Body Corporate Intelligence Platform (BCIP) and Ainub
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-06
+
+### Added
+- **Phase 3 Accounts Receivable, Customer Statements & Aging Intelligence (Prompt 003-006)**:
+  - **Deterministic AR Aging Service**: Implemented server-authoritative 6-bucket aging (`CURRENT`, `DAYS_1_30`, `DAYS_31_60`, `DAYS_61_90`, `DAYS_91_120`, `DAYS_121_PLUS`) with integer minor-unit arithmetic in `ArAgingService`.
+  - **Customer AR Balance Aggregation**: Provided multi-bucket customer balance summaries, total outstanding, and overdue amounts with multi-tenant isolation.
+  - **Chronological Customer Statements**: Built deterministic statement generator supporting `fromDate`/`toDate`, opening/closing balances, running debit/credit ledger, and complete source traceability (`sourceType`, `sourceId`).
+  - **Collection Priority & Action Intelligence**: Created explainable, non-autonomous prioritization scoring (0–100) and actionable recommendation rules (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `NORMAL`) with factual rationales.
+  - **Commercial Ledger Reconciliation**: Introduced four-way diagnostic cross-entity audit between Invoices, Receivables, Payments, and Customer Balances with zero autonomous mutation.
+  - **Frontend Workspace Integration**: Extended `CommercialBillingWorkspace` with dedicated views for AR Aging, Customer Statements, Collection Priority, and Reconciliation.
+  - **Comprehensive QA Test Suite**: Added 40 automated test scenarios in `tests/ar-aging.test.ts` verifying exact boundary dates, customer balances, statement traceability, collection priority, reconciliation, multi-tenant isolation, and RBAC.
+
+## [1.2.1] - 2026-10-06
+
+
+### Fixed & Hardened
+- **Phase 3 Billing Runtime Hardening & Final Acceptance Gate (Prompt 003-005-H)**:
+  - **Node.js 22 Runtime Compatibility**: Refactored billing domain enums (`CustomerStatus`, `BillingFrequency`, `InvoiceStatus`) to `as const` object constants and union types for compatibility with Node.js 22 native type-stripping mode.
+  - **Type-Only Import Remediation**: Audited all billing repositories, services, and routes to enforce `import type` for erased TypeScript interfaces (`BaseBillingEntity`, `Receivable`, `PaymentRecord`, `PaymentAllocation`, etc.).
+  - **Independent Service Bootstrapping**: Verified zero-dependency runtime execution for standalone API (`PORT=3999 node server.ts`) and background worker (`STANDALONE_WORKER=true node dist/worker/index.js`).
+  - **Live Endpoint Verification**: Validated HTTP 200 responses on `/health` and authenticated endpoints (`/customers`, `/invoices`, `/receivables`, `/payments`, `/payment-allocations`).
+  - **Zero-Error Type & CI Gate**: Confirmed `tsc --noEmit`, `npm run lint`, `npm test`, and `npm run build` pass completely.
+
 ## [1.2.0] - 2026-10-06
 
 ### Added

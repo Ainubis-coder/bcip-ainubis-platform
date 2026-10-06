@@ -528,7 +528,9 @@ export interface CRMAuditRecord {
     | 'task'
     | 'proposal'
     | 'contract'
-    | 'campaign';
+    | 'campaign'
+    | 'workflow'
+    | 'report';
   entityId: string;
   action: string;
   actorUserId: string;

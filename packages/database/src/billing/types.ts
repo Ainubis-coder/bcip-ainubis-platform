@@ -163,7 +163,7 @@ export interface InvoiceDeliveryTemplateInput {
   createdBy: string;
 }
 
-export type ReceivableStatus = 'OPEN' | 'PARTIALLY_PAID' | 'PAID' | 'OVERPAID' | 'VOIDED';
+export type ReceivableStatus = 'OPEN' | 'PARTIALLY_PAID' | 'PAID' | 'OVERPAID' | 'VOIDED' | 'OVERDUE';
 export type PaymentMethod = 'BANK_TRANSFER' | 'CARD' | 'CASH' | 'OTHER';
 export type PaymentStatus = 'RECORDED' | 'ALLOCATED' | 'PARTIALLY_ALLOCATED' | 'UNAPPLIED' | 'REVERSED';
 
@@ -213,3 +213,172 @@ export interface PaymentAllocation extends BaseBillingEntity {
   reversalReason?: string;
   reversedBy?: string;
 }
+
+// ============================================================================
+// PHASE 3 — PROMPT 003-006: AR AGING, STATEMENTS & RECONCILIATION TYPES
+// ============================================================================
+
+export type AgingBucketName = 'CURRENT' | 'DAYS_1_30' | 'DAYS_31_60' | 'DAYS_61_90' | 'DAYS_91_120' | 'DAYS_121_PLUS';
+
+export interface ReceivableAgingDetail {
+  receivableId: string;
+  invoiceId: string;
+  invoiceNumber: string;
+  customerId: string;
+  currency: string;
+  originalAmount: number;
+  amountReceived: number;
+  amountAllocated: number;
+  outstandingAmount: number;
+  dueDate: string;
+  asOfDate: string;
+  daysOutstanding: number;
+  agingBucket: AgingBucketName;
+  isOverdue: boolean;
+  status: ReceivableStatus;
+}
+
+export interface CustomerArBalance {
+  customerId: string;
+  customerName: string;
+  currency: string;
+  totalReceivable: number;
+  totalPaid: number;
+  totalOutstanding: number;
+  current: number;
+  days1To30: number;
+  days31To60: number;
+  days61To90: number;
+  days91To120: number;
+  days121Plus: number;
+  overdueAmount: number;
+  receivablesCount: number;
+  overdueCount: number;
+}
+
+export interface AgingPortfolioSummary {
+  asOfDate: string;
+  currency: string;
+  totalReceivable: number;
+  totalPaid: number;
+  totalOutstanding: number;
+  current: number;
+  days1To30: number;
+  days31To60: number;
+  days61To90: number;
+  days91To120: number;
+  days121Plus: number;
+  overdueAmount: number;
+  totalReceivablesCount: number;
+  overdueCount: number;
+  customerBalances: CustomerArBalance[];
+  receivables: ReceivableAgingDetail[];
+}
+
+export interface CustomerStatementLineItem {
+  id: string;
+  date: string;
+  type: 'INVOICE' | 'PAYMENT' | 'ALLOCATION' | 'REVERSAL';
+  sourceType: 'INVOICE' | 'PAYMENT' | 'ALLOCATION' | 'REVERSAL';
+  sourceId: string;
+  reference: string;
+  description: string;
+  debit: number;
+  credit: number;
+  runningBalance: number;
+}
+
+export interface CustomerStatement {
+  statementNumber: string;
+  customerId: string;
+  customer: {
+    id: string;
+    legalName: string;
+    billingEmail: string;
+    billingAddress: string;
+    currency: string;
+    taxNumber?: string;
+  };
+  statementDate: string;
+  asOfDate: string;
+  startDate?: string;
+  endDate?: string;
+  fromDate?: string;
+  toDate?: string;
+  currency: string;
+  openingBalance: number;
+  totalInvoiced: number;
+  totalPayments: number;
+  periodDebits: number;
+  periodCredits: number;
+  totalAllocated: number;
+  closingBalance: number;
+  overdueAmount: number;
+  agingBreakdown: {
+    current: number;
+    days1To30: number;
+    days31To60: number;
+    days61To90: number;
+    days91To120: number;
+    days121Plus: number;
+  };
+  lineItems: CustomerStatementLineItem[];
+  generatedAt: string;
+}
+
+
+export interface CollectionPriorityItem {
+  customerId: string;
+  customerName: string;
+  currency: string;
+  totalOutstanding: number;
+  overdueAmount: number;
+  oldestDueDate: string;
+  maxDaysOverdue: number;
+  dominantBucket: AgingBucketName;
+  overdueInvoicesCount: number;
+  priorityScore: number;
+  priorityLevel: 'NORMAL' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  recommendedAction: string;
+  reasons: string[];
+  lastPaymentDate?: string;
+  receivables: ReceivableAgingDetail[];
+}
+
+export interface LedgerReconciliationDiscrepancy {
+  type: string;
+  description: string;
+  expected: number;
+  actual: number;
+  entityId?: string;
+}
+
+export interface CurrencyReconciliation {
+  currency: string;
+  totalInvoiced: number;
+  totalReceivables: number;
+  totalPayments: number;
+  totalAllocated: number;
+  totalOutstanding: number;
+  isReconciled: boolean;
+}
+
+export interface LedgerReconciliationReport {
+  asOfDate: string;
+  isReconciled: boolean;
+  totalInvoicedAmount: number;
+  totalReceivablesOpened: number;
+  invoicingReceivablesDifference: number;
+  totalPaymentsRecorded: number;
+  totalAllocationsApplied: number;
+  totalUnappliedPayments: number;
+  totalReceivablesOutstanding: number;
+  expectedOutstanding: number;
+  receivablesReconciliationDifference: number;
+  customerBalancesSum: number;
+  customerReceivablesDifference: number;
+  discrepancies: LedgerReconciliationDiscrepancy[];
+  byCurrency: Record<string, CurrencyReconciliation>;
+  generatedAt: string;
+}
+
