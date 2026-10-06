@@ -103,19 +103,27 @@ export async function runReceivablesTests() {
   const userA: UserAccount = {
     id: 'user_agent_a',
     email: 'agent_a@bcip.co.za',
-    name: 'Agent A',
+    fullName: 'Agent A',
     role: 'MANAGING_AGENT_ADMIN',
     userRole: 'MANAGING_AGENT_ADMIN',
+    initials: 'AA',
     tenantId: tenantA,
+    tenantName: 'Tenant A',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
 
   const userB: UserAccount = {
     id: 'user_agent_b',
     email: 'agent_b@bcip.co.za',
-    name: 'Agent B',
+    fullName: 'Agent B',
     role: 'MANAGING_AGENT_ADMIN',
     userRole: 'MANAGING_AGENT_ADMIN',
+    initials: 'AB',
     tenantId: tenantB,
+    tenantName: 'Tenant B',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
 
   const tokenA = createClientAuthToken(userA, tenantA);
@@ -376,10 +384,14 @@ export async function runReceivablesTests() {
   const porterToken = createClientAuthToken({
     id: 'user_porter',
     email: 'porter@bcip.co.za',
-    name: 'Porter',
+    fullName: 'Porter',
     role: 'SCHEME_MEMBER',
     userRole: 'SCHEME_MEMBER',
+    initials: 'PO',
     tenantId: tenantA,
+    tenantName: 'Tenant A',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   }, tenantA);
 
   const unauthorizedRes = await executeRequest(app, 'POST', `/api/v1/billing/payments`, { authorization: `Bearer ${porterToken}` }, {

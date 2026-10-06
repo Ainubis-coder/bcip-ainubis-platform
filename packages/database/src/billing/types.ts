@@ -7,7 +7,7 @@ import { CustomerStatus, BillingFrequency, InvoiceStatus } from './enums.ts';
 
 export interface BaseBillingEntity {
   id: string;
-  tenantId: string;
+  tenantId: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
@@ -145,6 +145,15 @@ export interface InvoiceDeliveryAttempt extends BaseBillingEntity {
 }
 
 export interface InvoiceDeliveryTemplate extends BaseBillingEntity {
+  name: string;
+  subject: string;
+  body: string;
+  isActive: boolean;
+  version: number;
+  createdBy: string;
+}
+
+export interface InvoiceDeliveryTemplateInput {
   tenantId: string | null; // null represents SYSTEM templates
   name: string;
   subject: string;

@@ -403,7 +403,6 @@ export interface AIActionApproval {
   approvalStatus: 'APPROVED' | 'REJECTED';
   approvedAt: string;
   reason?: string;
-  requestId?: string;
   correlationId?: string;
   createdAt: string;
   updatedAt: string;
@@ -445,4 +444,3 @@ export interface AIActionTemplate {
   proposedChanges: Record<string, unknown>;
   verificationCriteria: Record<string, unknown>;
 }
-

@@ -729,7 +729,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
             disabled={isLoading}
             className="flex items-center gap-1.5"
           >
-            <Icon name="refresh" size="xs" className={isLoading ? 'animate-spin' : ''} />
+            <Icon name="refresh" size="sm" className={isLoading ? 'animate-spin' : ''} />
             <span>Sync</span>
           </Button>
 
@@ -739,7 +739,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
             onClick={() => setIsCreateInvoiceModalOpen(true)}
             className="flex items-center gap-1.5"
           >
-            <Icon name="plus" size="xs" />
+            <Icon name="plus" size="sm" />
             <span>Create Invoice</span>
           </Button>
         </div>
@@ -957,7 +957,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
               <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono">
                 Invoices ({invoices.length})
               </h3>
-              <Button variant="primary" size="xs" onClick={() => setIsCreateInvoiceModalOpen(true)}>
+              <Button variant="primary" size="sm" onClick={() => setIsCreateInvoiceModalOpen(true)}>
                 + New Draft
               </Button>
             </div>
@@ -1013,22 +1013,22 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
 
                   <div className="flex items-center gap-2 flex-wrap">
                     {selectedInvoice.status === 'DRAFT' && (
-                      <Button variant="secondary" size="xs" onClick={handleSubmitReview}>
+                      <Button variant="secondary" size="sm" onClick={handleSubmitReview}>
                         Submit Review
                       </Button>
                     )}
                     {selectedInvoice.status === 'REVIEW_REQUIRED' && (
-                      <Button variant="primary" size="xs" onClick={handleApprove}>
+                      <Button variant="primary" size="sm" onClick={handleApprove}>
                         Approve Invoice
                       </Button>
                     )}
                     {selectedInvoice.status === 'APPROVED' && (
-                      <Button variant="primary" size="xs" onClick={handleIssue}>
+                      <Button variant="primary" size="sm" onClick={handleIssue}>
                         Issue Official
                       </Button>
                     )}
                     {selectedInvoice.status === 'ISSUED' && (
-                      <Button variant="secondary" size="xs" onClick={() => setIsVoidModalOpen(true)}>
+                      <Button variant="secondary" size="sm" onClick={() => setIsVoidModalOpen(true)}>
                         Void Invoice
                       </Button>
                     )}
@@ -1042,7 +1042,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                       Line Items ({invoiceLines.length})
                     </h4>
                     {selectedInvoice.status === 'DRAFT' && (
-                      <Button variant="secondary" size="xs" onClick={() => setIsAddLineModalOpen(true)}>
+                      <Button variant="secondary" size="sm" onClick={() => setIsAddLineModalOpen(true)}>
                         + Add Line
                       </Button>
                     )}
@@ -1103,7 +1103,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                 <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Icon name="DocumentTextIcon" className="w-4 h-4 text-sky-400" />
+                      <Icon name="file-text" className="w-4 h-4 text-sky-400" />
                       <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono">
                         Official Documents ({invoiceDocuments.length})
                       </h4>
@@ -1111,7 +1111,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                     {(selectedInvoice.status === 'APPROVED' || selectedInvoice.status === 'ISSUED') && (
                       <Button
                         variant="primary"
-                        size="xs"
+                        size="sm"
                         onClick={handleGenerateDocument}
                         disabled={isGeneratingDocument}
                       >
@@ -1162,7 +1162,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                           <div className="flex justify-end gap-2 pt-1 border-t border-slate-900">
                             <Button
                               variant="secondary"
-                              size="xs"
+                              size="sm"
                               className="text-[10px]"
                               onClick={() => handlePreviewDocument(doc)}
                             >
@@ -1171,7 +1171,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                             {(selectedInvoice.status === 'APPROVED' || selectedInvoice.status === 'ISSUED') && (
                               <Button
                                 variant="primary"
-                                size="xs"
+                                size="sm"
                                 className="text-[10px]"
                                 onClick={() => handleOpenDeliveryModal(doc)}
                               >
@@ -1188,7 +1188,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                 {/* Deliveries & Communication History (Prompt 003-004) */}
                 <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-4">
                   <div className="flex items-center gap-2">
-                    <Icon name="PaperAirplaneIcon" className="w-4 h-4 text-sky-400" />
+                    <Icon name="arrow-up-right" className="w-4 h-4 text-sky-400" />
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono">
                       Delivery History ({invoiceDeliveries.length})
                     </h4>
@@ -1227,7 +1227,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                           <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-900">
                             <Button
                               variant="secondary"
-                              size="xs"
+                              size="sm"
                               className="text-[10px]"
                               onClick={() => handleToggleAttempts(del.id)}
                             >
@@ -1237,7 +1237,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                             {del.status === 'FAILED' && (
                               <Button
                                 variant="primary"
-                                size="xs"
+                                size="sm"
                                 className="text-[10px] bg-rose-600 hover:bg-rose-500"
                                 onClick={() => handleRetryDelivery(del.id)}
                                 disabled={isRetryingDelivery}
@@ -1305,7 +1305,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                 onClick={() => setIsRecordPaymentModalOpen(true)}
                 className="flex items-center gap-1.5"
               >
-                <Icon name="plus" size="xs" />
+                <Icon name="plus" size="sm" />
                 <span>Record Payment</span>
               </Button>
               <Button
@@ -1314,7 +1314,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                 onClick={() => setIsAllocatePaymentModalOpen(true)}
                 className="flex items-center gap-1.5"
               >
-                <Icon name="plus" size="xs" />
+                <Icon name="plus" size="sm" />
                 <span>Allocate Payment</span>
               </Button>
             </div>
@@ -1519,7 +1519,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                     <div className="flex items-center gap-2">
                       <Button
                         variant="secondary"
-                        size="xs"
+                        size="sm"
                         onClick={() => handleRecalculateReceivable(selectedReceivable.id)}
                       >
                         Recalculate Ledger
@@ -1568,7 +1568,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                               {!alloc.reversedAt && (
                                 <Button
                                   variant="secondary"
-                                  size="xs"
+                                  size="sm"
                                   className="text-rose-400 border-rose-950/60 hover:bg-rose-950/10"
                                   onClick={() => {
                                     setSelectedAllocForReversal(alloc);
@@ -1610,7 +1610,7 @@ export function CommercialBillingWorkspace({ activeTenant, user, onNavigate }: C
                       {selectedPayment.status !== 'REVERSED' && (
                         <Button
                           variant="primary"
-                          size="xs"
+                          size="sm"
                           className="bg-rose-600 hover:bg-rose-500"
                           onClick={() => {
                             setSelectedPmtForReversal(selectedPayment);

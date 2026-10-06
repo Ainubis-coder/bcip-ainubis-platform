@@ -8,12 +8,12 @@ export function structuredLoggingMiddleware(req: Request, res: Response, next: N
   }
 
   const startTime = Date.now();
-  const requestId = req.requestId;
+  const correlationId = req.correlationId;
 
   res.on('finish', () => {
     const durationMs = Date.now() - startTime;
     logger.info(`HTTP ${req.method} ${req.originalUrl} - ${res.statusCode}`, {
-      requestId,
+      correlationId,
       event: 'http_request_completed',
       data: {
         method: req.method,

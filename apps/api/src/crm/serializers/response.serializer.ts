@@ -16,7 +16,7 @@ export interface ApiSuccessEnvelope<T> {
   success: true;
   data: T;
   meta: {
-    requestId: string;
+    correlationId: string;
     timestamp: string;
   };
 }
@@ -26,7 +26,7 @@ export interface ApiPaginatedEnvelope<T> {
   data: T[];
   pagination: PaginationMeta;
   meta: {
-    requestId: string;
+    correlationId: string;
     timestamp: string;
   };
 }
@@ -43,18 +43,18 @@ export interface ApiErrorEnvelope {
     code: string;
     message: string;
     details?: ApiErrorDetail[];
-    requestId: string;
+    correlationId: string;
   };
 }
 
 export class ApiResponse {
   public static success<T>(res: Response, data: T, statusCode = 200): Response {
-    const requestId = (res.req as { requestId?: string }).requestId || 'unknown';
+    const correlationId = (res.req as { correlationId?: string }).correlationId || 'unknown';
     const envelope: ApiSuccessEnvelope<T> = {
       success: true,
       data,
       meta: {
-        requestId,
+        correlationId,
         timestamp: new Date().toISOString(),
       },
     };
@@ -67,7 +67,7 @@ export class ApiResponse {
     pagination: { page: number; pageSize: number; total: number },
     statusCode = 200
   ): Response {
-    const requestId = (res.req as { requestId?: string }).requestId || 'unknown';
+    const correlationId = (res.req as { correlationId?: string }).correlationId || 'unknown';
     const totalPages = pagination.pageSize > 0 ? Math.ceil(pagination.total / pagination.pageSize) : 1;
     const envelope: ApiPaginatedEnvelope<T> = {
       success: true,
@@ -79,7 +79,7 @@ export class ApiResponse {
         totalPages,
       },
       meta: {
-        requestId,
+        correlationId,
         timestamp: new Date().toISOString(),
       },
     };
@@ -93,14 +93,14 @@ export class ApiResponse {
     statusCode = 400,
     details?: ApiErrorDetail[]
   ): Response {
-    const requestId = (res.req as { requestId?: string }).requestId || 'unknown';
+    const correlationId = (res.req as { correlationId?: string }).correlationId || 'unknown';
     const envelope: ApiErrorEnvelope = {
       success: false,
       error: {
         code,
         message,
         details,
-        requestId,
+        correlationId,
       },
     };
     return res.status(statusCode).json(envelope);

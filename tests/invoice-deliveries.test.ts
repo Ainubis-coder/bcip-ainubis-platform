@@ -101,10 +101,15 @@ export async function runInvoiceDeliveriesTests() {
 
   const userA: UserAccount = {
     id: 'usr_deliv_admin',
-    name: 'Delivery Admin',
+    fullName: 'Delivery Admin',
     email: 'deliv@bcip.io',
     role: 'PLATFORM_SUPER_ADMIN',
     userRole: 'PLATFORM_SUPER_ADMIN',
+    initials: 'DA',
+    tenantId: tenantA,
+    tenantName: 'Tenant A',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
 
   const tokenA = createClientAuthToken(userA, tenantA);
@@ -112,16 +117,21 @@ export async function runInvoiceDeliveriesTests() {
     authorization: `Bearer ${tokenA}`,
     'x-test-tenant-id': tenantA,
     'x-test-user-id': userA.id,
-    'x-test-user-role': userA.role,
+    'x-test-user-role': userA.role || '',
     'x-test-user-email': userA.email,
   };
 
   const userB: UserAccount = {
     id: 'usr_deliv_b',
-    name: 'User B',
+    fullName: 'User B',
     email: 'userb@bcip.io',
     role: 'PLATFORM_SUPER_ADMIN',
     userRole: 'PLATFORM_SUPER_ADMIN',
+    initials: 'UB',
+    tenantId: tenantB,
+    tenantName: 'Tenant B',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
   const tokenB = createClientAuthToken(userB, tenantB);
   const authHeadersB = {

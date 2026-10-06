@@ -429,6 +429,11 @@ export class BillingController {
         taxRate: Number(dto.taxRate !== undefined ? dto.taxRate : 15),
         sortOrder: existingLines.length + 1,
         metadata: dto.metadata || {},
+        taxAmount: 0,
+        lineSubtotal: 0,
+        lineTotal: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       const allLines = [...existingLines, newLineData];

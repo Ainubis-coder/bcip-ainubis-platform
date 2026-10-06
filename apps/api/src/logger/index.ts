@@ -5,7 +5,7 @@ export interface LogEntry {
   level: 'debug' | 'info' | 'warn' | 'error';
   service: string;
   environment: string;
-  requestId?: string;
+  correlationId?: string;
   tenantId?: string;
   userId?: string;
   event?: string;
@@ -41,7 +41,7 @@ export class StructuredLogger {
       level,
       service: this.serviceName,
       environment: envConfig.APP_ENV,
-      requestId: meta?.requestId,
+      correlationId: meta?.correlationId,
       tenantId: meta?.tenantId,
       userId: meta?.userId,
       event: meta?.event,

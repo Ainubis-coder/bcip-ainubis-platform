@@ -10,6 +10,6 @@ healthRouter.get('/health', (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     version: envConfig.APP_VERSION,
-    requestId: req.requestId,
+    correlationId: req.correlationId,
   });
 });

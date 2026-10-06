@@ -3,13 +3,7 @@
  * Enforces tenant scope, soft delete isolation, and deterministic entity tracking.
  */
 
-export interface BaseBillingEntity {
-  id: string;
-  tenantId: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
-}
+import { BaseBillingEntity } from '../types.ts';
 
 export interface BillingQueryOptions {
   includeDeleted?: boolean;
@@ -33,7 +27,7 @@ export abstract class BaseBillingRepository<T extends BaseBillingEntity> {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
-  public async findById(tenantId: string, id: string): Promise<T | null> {
+  public async findById(tenantId: string | null, id: string): Promise<T | null> {
     const item = this.items.get(id);
     if (!item || item.tenantId !== tenantId || item.deletedAt) {
       return null;
@@ -41,7 +35,7 @@ export abstract class BaseBillingRepository<T extends BaseBillingEntity> {
     return JSON.parse(JSON.stringify(item));
   }
 
-  public async findAll(tenantId: string, options?: BillingQueryOptions): Promise<T[]> {
+  public async findAll(tenantId: string | null, options?: BillingQueryOptions): Promise<T[]> {
     let results: T[] = [];
     for (const item of this.items.values()) {
       if (item.tenantId !== tenantId) continue;
@@ -88,7 +82,7 @@ export abstract class BaseBillingRepository<T extends BaseBillingEntity> {
     return JSON.parse(JSON.stringify(newItem));
   }
 
-  public async update(tenantId: string, id: string, patch: Partial<T>): Promise<T | null> {
+  public async update(tenantId: string | null, id: string, patch: Partial<T>): Promise<T | null> {
     const existing = await this.findById(tenantId, id);
     if (!existing) return null;
 
@@ -104,7 +98,7 @@ export abstract class BaseBillingRepository<T extends BaseBillingEntity> {
     return JSON.parse(JSON.stringify(updated));
   }
 
-  public async delete(tenantId: string, id: string, soft: boolean = true): Promise<boolean> {
+  public async delete(tenantId: string | null, id: string, soft: boolean = true): Promise<boolean> {
     const existing = await this.findById(tenantId, id);
     if (!existing) return false;
 

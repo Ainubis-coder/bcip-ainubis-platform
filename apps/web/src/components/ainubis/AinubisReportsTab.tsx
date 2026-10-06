@@ -401,13 +401,13 @@ export function AinubisReportsTab({ activeTenant, user }: AinubisReportsTabProps
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <Button variant="secondary" size="xs" onClick={() => handleExportReport(selectedReport)}>
+                  <Button variant="secondary" size="sm" onClick={() => handleExportReport(selectedReport)}>
                     <span className="flex items-center gap-1"><Icon name="download" size="xs" /> Export JSON</span>
                   </Button>
 
                   {/* Actions according to lifecycle status */}
                   {selectedReport.status === 'DRAFT' && (
-                    <Button variant="secondary" size="xs" onClick={() => handleRequestReview(selectedReport.id)}>
+                    <Button variant="secondary" size="sm" onClick={() => handleRequestReview(selectedReport.id)}>
                       Submit Review
                     </Button>
                   )}
@@ -439,7 +439,7 @@ export function AinubisReportsTab({ activeTenant, user }: AinubisReportsTabProps
                   )}
 
                   {selectedReport.status !== 'ARCHIVED' && (
-                    <Button variant="secondary" size="xs" onClick={() => handleArchiveReport(selectedReport.id)}>
+                                        <Button variant="secondary" size="sm" onClick={() => handleArchiveReport(selectedReport.id)}>
                       Archive
                     </Button>
                   )}

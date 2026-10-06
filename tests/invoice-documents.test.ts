@@ -99,10 +99,15 @@ export async function runInvoiceDocumentsTests() {
 
   const userA: UserAccount = {
     id: 'usr_doc_admin',
-    name: 'Doc Admin',
+    fullName: 'Doc Admin',
     email: 'admin@bcip.io',
     role: 'PLATFORM_SUPER_ADMIN',
     userRole: 'PLATFORM_SUPER_ADMIN',
+    initials: 'DA',
+    tenantId: tenantA,
+    tenantName: 'Tenant A',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
 
   const tokenA = createClientAuthToken(userA, tenantA);
@@ -116,10 +121,15 @@ export async function runInvoiceDocumentsTests() {
 
   const userB: UserAccount = {
     id: 'usr_doc_b',
-    name: 'User B',
+    fullName: 'User B',
     email: 'userb@bcip.io',
     role: 'PLATFORM_SUPER_ADMIN',
     userRole: 'PLATFORM_SUPER_ADMIN',
+    initials: 'UB',
+    tenantId: tenantB,
+    tenantName: 'Tenant B',
+    lastLogin: new Date().toISOString(),
+    twoFactorEnabled: false,
   };
   const tokenB = createClientAuthToken(userB, tenantB);
   const authHeadersB = {

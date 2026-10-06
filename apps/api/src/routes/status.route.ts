@@ -18,7 +18,7 @@ statusRouter.get('/status', (req: Request, res: Response) => {
       networking: {
         webUrl: envConfig.WEB_URL,
         apiUrl: envConfig.API_URL,
-        requestIdHeader: envConfig.REQUEST_ID_HEADER,
+        correlationIdHeader: envConfig.REQUEST_ID_HEADER,
       },
       storage: {
         provider: envConfig.STORAGE_PROVIDER,
@@ -49,7 +49,7 @@ statusRouter.get('/status', (req: Request, res: Response) => {
         workerRuntime: 'ready',
       },
       timestamp: new Date().toISOString(),
-      requestId: req.requestId,
+      correlationId: req.correlationId,
     },
   });
 });

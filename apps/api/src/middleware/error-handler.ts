@@ -15,10 +15,10 @@ export function errorHandlerMiddleware(
 ) {
   const statusCode = err.statusCode || 500;
   const errorCode = err.code || (statusCode === 500 ? 'INTERNAL_SERVER_ERROR' : 'BAD_REQUEST');
-  const requestId = req.requestId || 'unknown';
+  const correlationId = req.correlationId || 'unknown';
 
   logger.error(`API Error: ${err.message}`, {
-    requestId,
+    correlationId,
     event: 'api_unhandled_exception',
     data: {
       code: errorCode,
@@ -34,7 +34,7 @@ export function errorHandlerMiddleware(
       message: statusCode === 500 && process.env.NODE_ENV === 'production'
         ? 'An unexpected internal error occurred'
         : err.message,
-      requestId,
+      correlationId,
     },
   });
 }
