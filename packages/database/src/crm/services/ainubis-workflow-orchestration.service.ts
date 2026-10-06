@@ -579,7 +579,7 @@ export class AinubisWorkflowOrchestrationService {
       if (!tenantId) return;
 
       try {
-        await this.handleCrmEvent(tenantId, event.eventType, event.payload as Record<string, unknown>, event.userId);
+        await this.handleCrmEvent(tenantId, event.eventType, event.payload as Record<string, unknown>, event.actorUserId);
       } catch (err) {
         console.error(`[AinubisWorkflows] Error triggering workflows for event ${event.eventType}:`, err);
       }
@@ -647,6 +647,7 @@ export class AinubisWorkflowOrchestrationService {
     }
 
     const correlationId = `wf_run_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const now = new Date().toISOString();
     const run = await workflowRunRepository.createRun(tenantId, {
       workflowId,
       workflowVersion: workflow.version,
@@ -657,6 +658,7 @@ export class AinubisWorkflowOrchestrationService {
       status: WorkflowRunStatus.QUEUED,
       context: options.initialContext || {},
       currentStepIndex: 0,
+      startedAt: now,
     });
 
     await crmAuditService.record(

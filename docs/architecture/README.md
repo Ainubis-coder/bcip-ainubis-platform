@@ -62,6 +62,7 @@ The Body Corporate Intelligence Platform (BCIP) is a production-grade, multi-ten
   * Tabular numeric formatting (`tabular-nums font-mono`).
   * Zero-pill metadata with subtle typographic separators (`·` or `/`).
   * Live status inspector modal for API diagnostics.
+  * **Client Stability Rule (ADR-002)**: All API clients used by React components must have stable references (memoized with `useMemo`), and React effects/callbacks must depend on stable primitive identifiers or memoized values rather than freshly created objects.
 
 ### 2.2 API Application (`/apps/api`)
 * **Technology**: Node.js, Express, TypeScript, Zod.

@@ -70,7 +70,7 @@ export function CrmPipelinePage({
   // Api Client instance
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Fetch opportunities and pipeline summary

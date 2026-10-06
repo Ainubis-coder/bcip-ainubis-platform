@@ -15,6 +15,18 @@ import { runCrmActivitiesTasksTests } from './crm-activities-tasks.test.ts';
 import { runAinubisFoundationTests } from './ainubis-foundation.test.ts';
 import { runAinubisDashboardContextualTests } from './ainubis-dashboard-contextual.test.ts';
 import { runAinubisContinuousMonitoringTests } from './ainubis-continuous-monitoring.test.ts';
+import { runAinubisActionsTests } from './ainubis-actions.test.ts';
+import { runAinubisWorkflowsTests } from './ainubis-workflows.test.ts';
+import { runAinubisWorkflowTemplatesTests } from './ainubis-workflow-templates.test.ts';
+import { runAinubisWorkflowAnalyticsTests } from './ainubis-workflow-analytics.test.ts';
+import { runAinubisWorkflowHealthTests } from './ainubis-workflow-health.test.ts';
+import { runAinubisPortfolioIntelligenceTests } from './ainubis-portfolio-intelligence.test.ts';
+import { runAinubisExecutiveReportingTests } from './ainubis-executive-reporting.test.ts';
+import { runBillingFoundationTests } from './billing-foundation.test.ts';
+import { runBillingWorkspaceTests } from './billing-workspace.test.ts';
+import { runInvoiceDocumentsTests } from './invoice-documents.test.ts';
+import { runInvoiceDeliveriesTests } from './invoice-deliveries.test.ts';
+import { runReceivablesTests } from './receivables.test.ts';
 
 async function main() {
   console.log('====================================================');
@@ -39,6 +51,18 @@ async function main() {
     await runAinubisFoundationTests();
     await runAinubisDashboardContextualTests();
     await runAinubisContinuousMonitoringTests();
+    await runAinubisActionsTests();
+    await runAinubisWorkflowsTests();
+    await runAinubisWorkflowTemplatesTests();
+    await runAinubisWorkflowAnalyticsTests();
+    await runAinubisWorkflowHealthTests();
+    await runAinubisPortfolioIntelligenceTests();
+    await runAinubisExecutiveReportingTests();
+    await runBillingFoundationTests();
+    await runBillingWorkspaceTests();
+    await runInvoiceDocumentsTests();
+    await runInvoiceDeliveriesTests();
+    await runReceivablesTests();
 
     console.log('\n====================================================');
     console.log('✅ ALL TEST SUITES PASSED SUCCESSFULLY');

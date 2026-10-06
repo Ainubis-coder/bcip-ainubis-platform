@@ -47,15 +47,17 @@ export function OrganisationDetailModal({
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loadingRelations, setLoadingRelations] = useState(false);
 
+  const orgId = organisation?.id;
+
   useEffect(() => {
-    if (isOpen && organisation) {
+    if (isOpen && orgId) {
       setActiveTab('overview');
       setLoadingRelations(true);
 
       Promise.all([
-        api.getOrganisationContacts(organisation.id).catch(() => []),
-        api.getOrganisationSchemeProspects(organisation.id).catch(() => []),
-        api.getOrganisationOpportunities(organisation.id).catch(() => []),
+        api.getOrganisationContacts(orgId).catch(() => []),
+        api.getOrganisationSchemeProspects(orgId).catch(() => []),
+        api.getOrganisationOpportunities(orgId).catch(() => []),
       ]).then(([c, s, o]) => {
         setContacts(Array.isArray(c) ? c : []);
         setSchemes(Array.isArray(s) ? s : []);
@@ -63,7 +65,7 @@ export function OrganisationDetailModal({
         setLoadingRelations(false);
       });
     }
-  }, [isOpen, organisation, api]);
+  }, [isOpen, orgId, api]);
 
   if (!organisation) return null;
 

@@ -34,15 +34,17 @@ export function SchemeProspectDetailModal({
 }: SchemeProspectDetailModalProps) {
   const [organisation, setOrganisation] = useState<Organisation | null>(null);
 
+  const schemeOrgId = schemeProspect?.organisationId;
+
   useEffect(() => {
-    if (isOpen && schemeProspect?.organisationId) {
-      api.getOrganisation(schemeProspect.organisationId)
+    if (isOpen && schemeOrgId) {
+      api.getOrganisation(schemeOrgId)
         .then(setOrganisation)
         .catch(() => setOrganisation(null));
     } else {
       setOrganisation(null);
     }
-  }, [isOpen, schemeProspect, api]);
+  }, [isOpen, schemeOrgId, api]);
 
   if (!schemeProspect) return null;
 

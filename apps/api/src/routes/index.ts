@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { statusRouter } from './status.route.ts';
 import { crmRouter } from '../crm/routes/index.ts';
+import { billingRouter } from '../billing/routes/billing.route.ts';
 
 export const apiV1Router = express.Router();
 
@@ -18,5 +19,6 @@ apiV1Router.get('/v1/openapi.json', (_req, res) => {
 
 apiV1Router.use('/v1', statusRouter);
 apiV1Router.use('/v1', crmRouter);
+apiV1Router.use('/v1/billing', billingRouter);
 
 

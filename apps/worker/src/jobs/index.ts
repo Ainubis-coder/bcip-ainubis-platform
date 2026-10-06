@@ -4,6 +4,7 @@ import {
   ainubisContinuousMonitorService,
   ainubisActionExecutionService,
   ainubisActionVerificationService,
+  ainubisPortfolioIntelligenceService,
   AICapability,
 } from '@bcip/database';
 
@@ -191,6 +192,69 @@ jobRegistry.register('ai.ainubis_action_verify', async (job) => {
       jobId: job.id,
       durationMs: Date.now() - start,
       metadata: { verified },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      error: err.message,
+    };
+  }
+});
+
+jobRegistry.register('ai.ainubis_portfolio_snapshot', async (job) => {
+  const start = Date.now();
+  const { tenantId, triggeredBy } = (job.payload || {}) as { tenantId: string; triggeredBy?: string };
+  try {
+    const res = await ainubisPortfolioIntelligenceService.analyzePortfolio(tenantId, triggeredBy || 'worker');
+    return {
+      success: true,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      metadata: { runId: res.id },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      error: err.message,
+    };
+  }
+});
+
+jobRegistry.register('ai.ainubis_portfolio_analysis', async (job) => {
+  const start = Date.now();
+  const { tenantId, triggeredBy } = (job.payload || {}) as { tenantId: string; triggeredBy?: string };
+  try {
+    const res = await ainubisPortfolioIntelligenceService.analyzePortfolio(tenantId, triggeredBy || 'worker');
+    return {
+      success: true,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      metadata: { runId: res.id },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      error: err.message,
+    };
+  }
+});
+
+jobRegistry.register('ai.ainubis_portfolio_health', async (job) => {
+  const start = Date.now();
+  const { tenantId } = (job.payload || {}) as { tenantId: string };
+  try {
+    const res = await ainubisPortfolioIntelligenceService.calculatePortfolioHealth(tenantId);
+    return {
+      success: true,
+      jobId: job.id,
+      durationMs: Date.now() - start,
+      metadata: { healthStatus: res.status, reason: res.reason },
     };
   } catch (err: any) {
     return {

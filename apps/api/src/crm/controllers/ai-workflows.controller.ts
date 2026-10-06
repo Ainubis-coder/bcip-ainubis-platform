@@ -8,6 +8,7 @@ import {
   automationWorkflowRepository,
   workflowRunRepository,
   ainubisWorkflowOrchestrationService,
+  AinubisWorkflowAnalyticsService,
   WorkflowStatus,
   WorkflowRunStatus,
 } from '@bcip/database';
@@ -358,6 +359,67 @@ export class AIWorkflowsController {
       ApiResponse.success(res, evidenceReferences);
     } catch (err: any) {
       ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to retrieve evidence', 500);
+    }
+  }
+
+  // 18. Get operations summary
+  public static async getOperations(req: Request, res: Response): Promise<void> {
+    const tenantId = req.tenantId!;
+    try {
+      const operations = await AinubisWorkflowAnalyticsService.getOperationsSummary(tenantId);
+      ApiResponse.success(res, operations);
+    } catch (err: any) {
+      ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to retrieve workflow operations', 500);
+    }
+  }
+
+  // 19. Get workflow analytics
+  public static async getAnalytics(req: Request, res: Response): Promise<void> {
+    const tenantId = req.tenantId!;
+    const workflowId = req.query.workflowId as string;
+    try {
+      const analytics = await AinubisWorkflowAnalyticsService.getMetrics(tenantId, workflowId);
+      ApiResponse.success(res, analytics);
+    } catch (err: any) {
+      ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to retrieve workflow analytics', 500);
+    }
+  }
+
+  // 20. Get workflow health
+  public static async getHealth(req: Request, res: Response): Promise<void> {
+    const tenantId = req.tenantId!;
+    try {
+      const health = await AinubisWorkflowAnalyticsService.getWorkflowHealth(tenantId);
+      ApiResponse.success(res, health);
+    } catch (err: any) {
+      ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to retrieve workflow health', 500);
+    }
+  }
+
+  // 21. Get step analytics
+  public static async getStepAnalytics(req: Request, res: Response): Promise<void> {
+    const tenantId = req.tenantId!;
+    const workflowId = req.query.workflowId as string;
+    if (!workflowId) {
+      ApiResponse.error(res, 'BAD_REQUEST', 'workflowId query parameter is required', 400);
+      return;
+    }
+    try {
+      const stepAnalytics = await AinubisWorkflowAnalyticsService.getStepAnalytics(tenantId, workflowId);
+      ApiResponse.success(res, stepAnalytics);
+    } catch (err: any) {
+      ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to retrieve workflow step analytics', 500);
+    }
+  }
+
+  // 22. Analyze failures / Failure intelligence
+  public static async analyzeFailures(req: Request, res: Response): Promise<void> {
+    const tenantId = req.tenantId!;
+    try {
+      const observations = await AinubisWorkflowAnalyticsService.analyzeFailureIntelligence(tenantId, req.user?.id || 'system');
+      ApiResponse.success(res, { observations });
+    } catch (err: any) {
+      ApiResponse.error(res, 'INTERNAL_ERROR', err.message || 'Failed to execute workflow failure analysis', 500);
     }
   }
 }

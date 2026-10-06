@@ -16,6 +16,7 @@ import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { NotificationPanel } from './components/NotificationPanel';
 import { TenantContextModal } from './components/TenantContextModal';
 import { AinubisDrawer } from './components/AinubisDrawer';
+import { CommercialBillingWorkspace } from './components/billing';
 import { ShellErrorBoundary } from './components/ShellStates';
 
 export function AppShell() {
@@ -31,7 +32,7 @@ export function AppShell() {
         'dashboard', 'crm', 'leads', 'organisations', 'scheme_prospects', 'activities', 'schemes', 'properties',
         'finance', 'invoices', 'payments', 'maintenance', 'contractors',
         'governance', 'documents', 'integrations', 'analytics', 'ainubis',
-        'alerts', 'recommendations', 'tasks', 'notifications', 'administration', 'design_system'
+        'alerts', 'recommendations', 'tasks', 'notifications', 'administration', 'design_system', 'billing'
       ];
       if (validModules.includes(hash)) return hash;
     }
@@ -247,6 +248,14 @@ export function AppShell() {
                 <DesignSystemShowcase />
               )}
 
+              {currentModule === 'billing' && (
+                <CommercialBillingWorkspace
+                  activeTenant={activeTenant}
+                  user={CURRENT_USER}
+                  onNavigate={navigateTo}
+                />
+              )}
+
               {currentModule !== 'dashboard' &&
                 currentModule !== 'crm' &&
                 currentModule !== 'leads' &&
@@ -255,7 +264,8 @@ export function AppShell() {
                 currentModule !== 'activities' &&
                 currentModule !== 'tasks' &&
                 currentModule !== 'ainubis' &&
-                currentModule !== 'design_system' && (
+                currentModule !== 'design_system' &&
+                currentModule !== 'billing' && (
                   <ModulePlaceholderView
                     moduleId={currentModule}
                     onNavigateBack={() => navigateTo('dashboard')}

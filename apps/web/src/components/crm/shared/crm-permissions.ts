@@ -326,5 +326,96 @@ export function canAdminAIActions(roleString?: string | null): boolean {
   return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_ACTION_ADMIN);
 }
 
+/**
+ * Checks if user is permitted to view Ainubis workflows
+ */
+export function canViewWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_VIEW);
+}
+
+/**
+ * Checks if user is permitted to create Ainubis workflows
+ */
+export function canCreateWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_CREATE);
+}
+
+/**
+ * Checks if user is permitted to edit Ainubis workflows
+ */
+export function canEditWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_EDIT);
+}
+
+/**
+ * Checks if user is permitted to activate/pause Ainubis workflows
+ */
+export function canActivateWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_ACTIVATE);
+}
+
+/**
+ * Checks if user is permitted to manually run Ainubis workflows
+ */
+export function canRunWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_RUN);
+}
+
+/**
+ * Checks if user is permitted to approve workflow execution gates
+ */
+export function canApproveWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_APPROVE);
+}
+
+/**
+ * Checks if user is permitted to manage workflow administration
+ */
+export function canAdminWorkflows(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_ADMIN);
+}
+
+/**
+ * Checks if user is permitted to view Ainubis workflow templates
+ */
+export function canViewWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_VIEW);
+}
+
+/**
+ * Checks if user is permitted to create Ainubis workflow templates
+ */
+export function canCreateWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_CREATE);
+}
+
+/**
+ * Checks if user is permitted to edit Ainubis workflow templates
+ */
+export function canEditWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_EDIT);
+}
+
+/**
+ * Checks if user is permitted to publish Ainubis workflow templates
+ */
+export function canPublishWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_PUBLISH);
+}
+
+/**
+ * Checks if user is permitted to archive/delete Ainubis workflow templates
+ */
+export function canArchiveWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_ARCHIVE);
+}
+
+/**
+ * Checks if user is permitted to instantiate Ainubis workflow templates into active workflows
+ */
+export function canInstantiateWorkflowTemplates(roleString?: string | null): boolean {
+  return checkPermission(roleString, SYSTEM_PERMISSIONS.CRM_AI_WORKFLOW_TEMPLATE_INSTANTIATE);
+}
+
 
 

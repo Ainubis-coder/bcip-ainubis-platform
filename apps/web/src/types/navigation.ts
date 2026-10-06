@@ -22,7 +22,8 @@ export type ModuleId =
   | 'tasks'
   | 'notifications'
   | 'administration'
-  | 'design_system';
+  | 'design_system'
+  | 'billing';
 
 export interface NavItem {
   id: ModuleId;
@@ -74,6 +75,7 @@ export const ENTERPRISE_NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'finance', label: 'Finance', iconName: 'finance', description: 'Levy accounts, reserve funds & general ledger', phase: 'Phase 3' },
       { id: 'invoices', label: 'Invoices', iconName: 'invoices', description: 'Billing schedules, special levies & debtor rolls', phase: 'Phase 3' },
+      { id: 'billing', label: 'Commercial Billing', iconName: 'file-text', description: 'Commercial invoicing & customer workspace', phase: 'Phase 3', isNew: true },
       { id: 'payments', label: 'Payments', iconName: 'payments', description: 'Debit order runs & bank reconciliations', phase: 'Phase 3' },
     ],
   },

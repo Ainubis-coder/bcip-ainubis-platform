@@ -7,6 +7,8 @@ export * from './enums.ts';
 export * from './types.ts';
 export * from './ai-types.ts';
 export * from './workflow-types.ts';
+export * from './portfolio-types.ts';
+export * from './report-types.ts';
 export * from './events/crm-events.ts';
 export * from './audit/crm-audit.ts';
 
@@ -27,6 +29,9 @@ export * from './repositories/proposal.repository.ts';
 export * from './repositories/contract.repository.ts';
 export * from './repositories/automation-workflow.repository.ts';
 export * from './repositories/workflow-run.repository.ts';
+export * from './repositories/workflow-template.repository.ts';
+export * from './repositories/portfolio-intelligence.repository.ts';
+export * from './repositories/executive-report.repository.ts';
 
 // Domain Services
 export * from './services/organisation.service.ts';
@@ -49,3 +54,7 @@ export * from './services/ainubis-action-template.registry.ts';
 export * from './services/ainubis-action-verification.service.ts';
 export * from './services/ainubis-action-execution.service.ts';
 export * from './services/ainubis-workflow-orchestration.service.ts';
+export * from './services/ainubis-workflow-validator.service.ts';
+export * from './services/ainubis-workflow-analytics.service.ts';
+export * from './services/ainubis-portfolio-intelligence.service.ts';
+export * from './services/ainubis-executive-reporting.service.ts';

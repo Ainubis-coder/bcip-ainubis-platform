@@ -18,3 +18,7 @@ export * from './AinubisDetailModal';
 export * from './AinubisSkeleton';
 export * from './AinubisEmptyState';
 export * from './AinubisErrorState';
+export * from './AinubisActionsTab';
+export * from './AinubisWorkflowsTab';
+export * from './AinubisPortfolioTab';
+export * from './AinubisReportsTab';

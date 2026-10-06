@@ -4,6 +4,39 @@ All notable changes to the Body Corporate Intelligence Platform (BCIP) and Ainub
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-06
+
+### Added
+- **Phase 3 Receivables, Payments & Payment Allocation Foundation (Prompt 003-005)**:
+  - **Receivables & Payments Engine**: Built the `ReceivableService` executing safe minor-unit monetary calculations for payments, receivables, and matching allocations.
+  - **Automatic Receivable Creation**: Integrated automatic idempotent receivable opening on invoice issuance, and void triggers on void actions.
+  - **Traceable Allocations & Reversals**: Developed secure allocation mappings and reversal tracking that preserves ledger history using event audits instead of hard deletion.
+  - **Frontend AR Workspace**: Extended `CommercialBillingWorkspace` with Accounts Receivable views, stats dashboards, payment recording and allocation wizards, and reversal controls.
+  - **Automated Integration Testing**: Added robust API and service layer integration tests in `tests/receivables.test.ts`.
+
+## [1.1.0] - 2026-10-05
+
+### Added
+- **Phase 3 Invoice Delivery & Customer Communication Foundation (Prompt 003-004)**:
+  - **Governed Communication Delivery Service**: Built the `InvoiceDeliveryService` core supporting dispatch scheduling, template resolution, retry logic, and attempt tracking.
+  - **Abstract Provider Architecture**: Implemented custom `MockEmailDeliveryProvider` simulation for success, temporary, and permanent SMTP failure paths without external mail coupling.
+  - **Variable Mapping & Sandboxed rendering**: Developed a secure placeholder resolution engine for mapping customer details and monetary calculations safely.
+  - **Frontend Communication Center**: Extended `CommercialBillingWorkspace` detail panels with document preparation, recipient verification, template selection, and retry trace tables.
+  - **Comprehensive QA Testing**: Added `tests/invoice-deliveries.test.ts` verifying variables, state gates, idempotency key checks, multi-tenant isolation, and RBAC rules.
+
+- **Phase 3 Invoice Document Generation & Delivery Foundation (Prompt 003-003)**:
+  - **Invoice Document Generation Service**: Implemented governed document generation for APPROVED and ISSUED invoices with versioning, superseding of older versions, and SHA-256 content checksum integrity.
+  - **Storage & Delivery Abstraction**: Introduced storage reference management and delivery status tracking (`NOT_SENT`, `QUEUED`, `SENT`, `FAILED`) without coupling to external email providers.
+  - **Security & RBAC**: Enforced `billing:invoice:document:view` and `billing:invoice:document:generate` permissions with strict multi-tenant isolation and idempotency key support.
+  - **Comprehensive QA Testing**: Added `tests/invoice-documents.test.ts` covering document generation rules, versioning, audit logging, and cross-tenant security.
+
+- **Phase 3 Commercial Operations Billing Workspace & Invoice Management (Prompt 003-002)**:
+  - **Commercial Billing Workspace (`/billing`)**: Created production-ready application workspace for managing billing customers, profiles, tax configurations, and invoices.
+  - **Invoice Creation & Line Item Management**: Implemented guided creation wizard and line item editor with server-authoritative calculation preview.
+  - **Governed Lifecycle & Immutability**: Supported DRAFT → REVIEW_REQUIRED → APPROVED → ISSUED → VOIDED state transitions with strict issued-invoice immutability and mandatory void reason audit tracking.
+  - **CRM Relationship Navigation**: Enabled direct cross-navigation between Billing Customers and CRM Organisations.
+  - **Comprehensive QA Testing**: Added `tests/billing-workspace.test.ts` covering dashboard isolation, customer CRUD, invoice lifecycle, and RBAC enforcement.
+
 ## [1.0.0] - 2026-10-02
 
 ### Added

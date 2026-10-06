@@ -36,15 +36,17 @@ export function OpportunityDetailModal({
   const [history, setHistory] = useState<OpportunityStageHistory[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
+  const oppId = opportunity?.id;
+
   useEffect(() => {
-    if (isOpen && opportunity) {
+    if (isOpen && oppId) {
       setLoadingHistory(true);
-      fetchHistory(opportunity.id)
+      fetchHistory(oppId)
         .then((data) => setHistory(data || []))
         .catch(() => setHistory([]))
         .finally(() => setLoadingHistory(false));
     }
-  }, [isOpen, opportunity]);
+  }, [isOpen, oppId]);
 
   if (!opportunity) return null;
 

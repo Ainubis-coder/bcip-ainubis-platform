@@ -84,7 +84,7 @@ export function SchemeProspectsPage({
 
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Load scheme prospects from backend REST API

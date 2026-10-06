@@ -25,6 +25,7 @@ import {
   canApproveAI,
   canDismissAI,
   canViewAIActions,
+  canViewWorkflows,
 } from '../crm/shared/crm-permissions';
 import { IntelligenceObservationCard } from './IntelligenceObservationCard';
 import { AinubisHealthSummary } from './AinubisHealthSummary';
@@ -35,6 +36,9 @@ import { AinubisEmptyState } from './AinubisEmptyState';
 import { AinubisErrorState } from './AinubisErrorState';
 import { AinubisDetailModal } from './AinubisDetailModal';
 import { AinubisActionsTab } from './AinubisActionsTab';
+import { AinubisWorkflowsTab } from './AinubisWorkflowsTab';
+import { AinubisPortfolioTab } from './AinubisPortfolioTab.tsx';
+import { AinubisReportsTab } from './AinubisReportsTab';
 import { Button, Icon, Modal } from '@bcip/ui';
 
 interface AinubisIntelligencePageProps {
@@ -53,12 +57,13 @@ export function AinubisIntelligencePage({
   const userRole = user.role || user.userRole;
   const hasViewPermission = canViewAI(userRole);
   const hasViewActionsPermission = canViewAIActions(userRole);
+  const hasViewWorkflowsPermission = canViewWorkflows(userRole);
   const allowGenerate = canGenerateAI(userRole);
   const allowReview = canReviewAI(userRole);
   const allowApprove = canApproveAI(userRole);
   const allowDismiss = canDismissAI(userRole);
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'actions'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'portfolio' | 'reports' | 'actions' | 'workflows'>('dashboard');
   const [actionProposedSuccess, setActionProposedSuccess] = useState<string | null>(null);
 
   // Summary Metrics State
@@ -103,7 +108,7 @@ export function AinubisIntelligencePage({
 
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Load summary and observations from backend
@@ -335,7 +340,7 @@ export function AinubisIntelligencePage({
       )}
 
       {/* Navigation Tabs */}
-      {hasViewActionsPermission && (
+      {(hasViewActionsPermission || hasViewWorkflowsPermission) && (
         <div className="flex border-b border-slate-800 gap-4">
           <button
             onClick={() => setActiveTab('dashboard')}
@@ -348,21 +353,61 @@ export function AinubisIntelligencePage({
             Health Dashboard & Feed
           </button>
           <button
-            onClick={() => setActiveTab('actions')}
+            onClick={() => setActiveTab('portfolio')}
             className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
-              activeTab === 'actions'
+              activeTab === 'portfolio'
                 ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            Actions & CRM Automation
+            Portfolio Intelligence
           </button>
+          <button
+            onClick={() => setActiveTab('reports')}
+            className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
+              activeTab === 'reports'
+                ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            Executive Reports
+          </button>
+          {hasViewActionsPermission && (
+            <button
+              onClick={() => setActiveTab('actions')}
+              className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
+                activeTab === 'actions'
+                  ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Actions & CRM Automation
+            </button>
+          )}
+          {hasViewWorkflowsPermission && (
+            <button
+              onClick={() => setActiveTab('workflows')}
+              className={`pb-3 text-xs uppercase font-mono font-bold tracking-wider relative ${
+                activeTab === 'workflows'
+                  ? 'text-sky-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-sky-400'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Automation & Workflows
+            </button>
+          )}
         </div>
       )}
 
       {/* Main Content States */}
       {activeTab === 'actions' && hasViewActionsPermission ? (
         <AinubisActionsTab activeTenant={activeTenant} user={user} />
+      ) : activeTab === 'workflows' && hasViewWorkflowsPermission ? (
+        <AinubisWorkflowsTab activeTenant={activeTenant} user={user} />
+      ) : activeTab === 'portfolio' ? (
+        <AinubisPortfolioTab activeTenant={activeTenant} user={user} />
+      ) : activeTab === 'reports' ? (
+        <AinubisReportsTab activeTenant={activeTenant} user={user} />
       ) : error ? (
         <AinubisErrorState
           error={error.message}

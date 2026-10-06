@@ -89,7 +89,7 @@ export function TasksPage({
 
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Load tasks from backend REST API

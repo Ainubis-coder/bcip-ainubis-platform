@@ -59,7 +59,7 @@ export function LeadConversionWizard({
 
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Initialize conversion form fields whenever target lead changes or modal opens

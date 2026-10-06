@@ -85,7 +85,7 @@ export function ActivitiesPage({
 
   const api = useMemo(
     () => getCrmApiClient(activeTenant.id, user),
-    [activeTenant.id, user]
+    [activeTenant.id, user.id, user.role, user.userRole]
   );
 
   // Load activities from backend REST API

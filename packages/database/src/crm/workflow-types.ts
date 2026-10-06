@@ -113,6 +113,9 @@ export interface AutomationWorkflow {
   updatedAt: string;
   activatedAt?: string;
   deactivatedAt?: string;
+  sourceTemplateId?: string;
+  sourceTemplateVersionId?: string;
+  sourceTemplateVersion?: number;
 }
 
 export interface WorkflowRun {
@@ -181,4 +184,75 @@ export interface WorkflowOutcome {
   completionStatus: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// ============================================================================
+// WORKFLOW TEMPLATE DOMAIN (Prompt 002E-006 & 4A)
+// ============================================================================
+export const TemplateScope = {
+  SYSTEM: 'SYSTEM',
+  TENANT: 'TENANT',
+} as const;
+
+export type TemplateScope = (typeof TemplateScope)[keyof typeof TemplateScope];
+
+export const WorkflowTemplateStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  DEPRECATED: 'DEPRECATED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+
+export type WorkflowTemplateStatus = (typeof WorkflowTemplateStatus)[keyof typeof WorkflowTemplateStatus];
+
+export interface WorkflowTemplate {
+  id: string;
+  tenantId: string;
+  templateScope: TemplateScope;
+  ownerTenantId: string | null;
+  sourceTemplateId?: string | null;
+  sourceTemplateVersionId?: string | null;
+  sourceTemplateVersion?: number | null;
+  templateKey: string;
+  name: string;
+  description: string;
+  category: string;
+  purpose: string;
+  status: WorkflowTemplateStatus;
+  version: number;
+  trigger: WorkflowTriggerConfig;
+  steps: WorkflowStepConfig[];
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  archivedAt?: string;
+  deletedAt?: string;
+}
+
+export interface WorkflowTemplateVersion {
+  id: string;
+  tenantId?: string;
+  templateScope?: TemplateScope;
+  ownerTenantId?: string | null;
+  templateId: string;
+  version: number;
+  trigger: WorkflowTriggerConfig;
+  steps: WorkflowStepConfig[];
+  status: WorkflowTemplateStatus;
+  publishedAt?: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface WorkflowTemplateUsage {
+  id: string;
+  tenantId: string;
+  templateId: string;
+  templateVersionId?: string;
+  templateVersion?: number;
+  workflowId: string;
+  instantiatedAt: string;
+  instantiatedBy: string;
 }

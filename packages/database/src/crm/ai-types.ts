@@ -63,6 +63,7 @@ export const AICapability = {
   CRM_PROPOSAL_ASSISTANCE: 'CRM_PROPOSAL_ASSISTANCE',
   CRM_CLIENT_RELATIONSHIP_INTELLIGENCE: 'CRM_CLIENT_RELATIONSHIP_INTELLIGENCE',
   CRM_SCHEME_INTELLIGENCE: 'CRM_SCHEME_INTELLIGENCE',
+  CRM_PORTFOLIO_INTEGRATION: 'CRM_PORTFOLIO_INTEGRATION',
 } as const;
 
 export type AICapability = (typeof AICapability)[keyof typeof AICapability];
@@ -80,7 +81,9 @@ export interface EvidenceReference {
     | 'task'
     | 'proposal'
     | 'contract'
-    | 'campaign';
+    | 'campaign'
+    | 'workflow'
+    | 'workflow_run';
   entityId: string;
   field?: string;
   value?: unknown;

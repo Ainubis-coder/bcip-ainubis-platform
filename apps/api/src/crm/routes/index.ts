@@ -17,6 +17,10 @@ import { proposalsRouter } from './proposals.route.ts';
 import { contractsRouter } from './contracts.route.ts';
 import { aiObservationsRouter } from './ai-observations.route.ts';
 import { aiActionsRouter } from './ai-actions.route.ts';
+import { aiWorkflowsRouter, aiWorkflowRunsRouter } from './ai-workflows.route.ts';
+import { aiWorkflowTemplatesRouter } from './ai-workflow-templates.route.ts';
+import { aiPortfolioRouter } from './ai-portfolio.route.ts';
+import { aiReportsRouter } from './ai-reports.route.ts';
 
 export const crmRouter = express.Router();
 
@@ -30,6 +34,11 @@ crmRouter.use('/tasks', tasksRouter);
 crmRouter.use('/campaigns', campaignsRouter);
 crmRouter.use('/proposals', proposalsRouter);
 crmRouter.use('/contracts', contractsRouter);
-crmRouter.use('/ai', aiObservationsRouter);
-crmRouter.use('/ai/observations', aiObservationsRouter);
+crmRouter.use('/ai/workflow-templates', aiWorkflowTemplatesRouter);
+crmRouter.use('/ai/portfolio', aiPortfolioRouter);
+crmRouter.use('/ai/reports', aiReportsRouter);
 crmRouter.use('/ai/actions', aiActionsRouter);
+crmRouter.use('/ai/workflows', aiWorkflowsRouter);
+crmRouter.use('/ai/workflow-runs', aiWorkflowRunsRouter);
+crmRouter.use('/ai/observations', aiObservationsRouter);
+crmRouter.use('/ai', aiObservationsRouter);

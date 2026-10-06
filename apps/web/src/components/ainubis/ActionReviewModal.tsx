@@ -4,7 +4,7 @@
  * Highly detailed inspection, evidence traceback, stale state checks, and explicit decision controls.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Icon, Modal } from '@bcip/ui';
 import { getCrmApiClient } from '../crm/shared/crm-api.ts';
 import type { TenantContext, UserAccount } from '../../types/tenant';
@@ -40,19 +40,24 @@ export function ActionReviewModal({
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const api = getCrmApiClient(activeTenant.id, user);
+  const api = useMemo(
+    () => getCrmApiClient(activeTenant.id, user),
+    [activeTenant.id, user.id, user.role, user.userRole]
+  );
+
+  const actionId = action?.id;
 
   useEffect(() => {
-    if (!action || !isOpen) return;
+    if (!actionId || !isOpen) return;
 
     const loadDetails = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const [evData, execData, verData] = await Promise.all([
-          api.getAiActionEvidence(action.id).catch(() => []),
-          api.getAiActionExecution(action.id).catch(() => []),
-          api.getAiActionVerification(action.id).catch(() => []),
+          api.getAiActionEvidence(actionId).catch(() => []),
+          api.getAiActionExecution(actionId).catch(() => []),
+          api.getAiActionVerification(actionId).catch(() => []),
         ]);
         setEvidence(evData);
         setExecutions(execData);
@@ -67,7 +72,7 @@ export function ActionReviewModal({
     loadDetails();
     setShowRejectForm(false);
     setRejectReason('');
-  }, [action, isOpen]);
+  }, [actionId, isOpen, api]);
 
   if (!action) return null;
 

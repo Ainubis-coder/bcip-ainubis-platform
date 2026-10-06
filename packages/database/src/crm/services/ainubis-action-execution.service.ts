@@ -419,13 +419,27 @@ export class AinubisActionExecutionService {
     try {
       switch (action.actionType) {
         case AIActionType.CREATE_TASK: {
-          const task = await taskService.createTask(tenantId, action.proposedChanges as any, executorUserId);
+          const taskDto: any = {
+            ...action.proposedChanges,
+            opportunityId: (action.proposedChanges as any).opportunityId || (action.targetEntityType === 'opportunity' ? action.targetEntityId : undefined),
+            leadId: (action.proposedChanges as any).leadId || (action.targetEntityType === 'lead' ? action.targetEntityId : undefined),
+            organisationId: (action.proposedChanges as any).organisationId || (action.targetEntityType === 'organisation' ? action.targetEntityId : undefined),
+            schemeProspectId: (action.proposedChanges as any).schemeProspectId || (action.targetEntityType === 'scheme_prospect' ? action.targetEntityId : undefined),
+          };
+          const task = await taskService.createTask(tenantId, taskDto, executorUserId);
           executedTargetId = task.id;
           break;
         }
 
         case AIActionType.CREATE_ACTIVITY: {
-          const activity = await activityService.logActivity(tenantId, action.proposedChanges as any, executorUserId);
+          const activityDto: any = {
+            ...action.proposedChanges,
+            opportunityId: (action.proposedChanges as any).opportunityId || (action.targetEntityType === 'opportunity' ? action.targetEntityId : undefined),
+            leadId: (action.proposedChanges as any).leadId || (action.targetEntityType === 'lead' ? action.targetEntityId : undefined),
+            organisationId: (action.proposedChanges as any).organisationId || (action.targetEntityType === 'organisation' ? action.targetEntityId : undefined),
+            schemeProspectId: (action.proposedChanges as any).schemeProspectId || (action.targetEntityType === 'scheme_prospect' ? action.targetEntityId : undefined),
+          };
+          const activity = await activityService.logActivity(tenantId, activityDto, executorUserId);
           executedTargetId = activity.id;
           break;
         }

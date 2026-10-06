@@ -4,7 +4,7 @@
  * Contextual panel mounted inside CRM modules (Pipeline, Leads, Organisations, Schemes, Tasks, Activities).
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TenantContext, UserAccount } from '../../types/tenant';
 import type { AIObservationRecord, ContextualIntelligenceResponse } from '../crm/shared/crm-types';
 import { HealthStatus } from '../crm/shared/crm-types';
@@ -43,7 +43,10 @@ export function AinubisContextualPanel({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedObservation, setSelectedObservation] = useState<AIObservationRecord | null>(null);
 
-  const client = getCrmApiClient(activeTenant.id, user);
+  const client = useMemo(
+    () => getCrmApiClient(activeTenant.id, user),
+    [activeTenant.id, user.id, user.role, user.userRole]
+  );
 
   const defaultTitles: Record<string, string> = {
     opportunity: 'Ainubis Pipeline Intelligence',
